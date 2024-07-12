@@ -2,7 +2,7 @@ import { isNumber } from 'radash';
 import { useState } from 'react';
 
 import { defaultStory } from './mock';
-import type { Story, StoryChoice } from './types';
+import type { Scene, SceneChoice } from './types';
 
 const Rect = ({ text, index, choice, onAdd }: RectProps) => {
   return (
@@ -46,7 +46,7 @@ export interface RowProps {
 }
 
 const StoryPart = ({ story, onAdd }: StoryPartProps) => {
-  const handleAdd = (choice: StoryChoice, index: number, subStory?: Story) => {
+  const handleAdd = (choice: SceneChoice, index: number, subStory?: Scene) => {
     if (subStory) {
       onAdd?.({
         ...story,
@@ -57,7 +57,7 @@ const StoryPart = ({ story, onAdd }: StoryPartProps) => {
 
           return {
             ...choice,
-            story: subStory,
+            scene: subStory,
           };
         }),
       });
@@ -73,11 +73,11 @@ const StoryPart = ({ story, onAdd }: StoryPartProps) => {
 
         return {
           ...choice,
-          story: {
-            ...choice.story,
+          scene: {
+            ...choice.scene,
             choices: [
-              ...(choice.story.choices || []),
-              { text: '', story: { text: '' } },
+              ...(choice.scene.choices || []),
+              { text: '', scene: { text: '' } },
             ],
           },
         };
@@ -91,7 +91,7 @@ const StoryPart = ({ story, onAdd }: StoryPartProps) => {
         {story.choices?.map((choice, index) => (
           <Rect
             key={`${index}-${choice.text}`}
-            text={choice.story.text}
+            text={choice.scene.text}
             index={index + 1}
             choice={choice.text}
             onAdd={() => handleAdd(choice, index)}
@@ -99,10 +99,10 @@ const StoryPart = ({ story, onAdd }: StoryPartProps) => {
         ))}
       </Row>
 
-      {story.choices?.filter(c => c.story.choices?.length).map((choice, index) => (
+      {story.choices?.filter(c => c.scene.choices?.length).map((choice, index) => (
         <StoryPart
           key={`${index}-${choice.text}`}
-          story={choice.story}
+          story={choice.scene}
           //onAdd={subStory => onAdd?.({ ...story, choices: story.choices?.map((c, i) => i === index ? { ...choice, story: subStory } : choice) })}
           onAdd={subStory => handleAdd(choice, index, subStory)}
         />
@@ -112,12 +112,12 @@ const StoryPart = ({ story, onAdd }: StoryPartProps) => {
 }
 
 export interface StoryPartProps {
-  story: Story;
-  onAdd?: (story: Story) => void;
+  story: Scene;
+  onAdd?: (story: Scene) => void;
 }
 
 export const App = () => {
-  const [story, setStory] = useState<Story>(defaultStory);
+  const [story, setStory] = useState<Scene>(defaultStory);
 
   const handleAddChoice = () => {
     setStory(prevStory => {
@@ -127,7 +127,7 @@ export const App = () => {
           ...(prevStory.choices || []),
           {
             text: '',
-            story: {
+            scene: {
               text: '',
             },
           },

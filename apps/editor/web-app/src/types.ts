@@ -1,10 +1,21 @@
-export interface Story {
+export interface Scene {
   id: string;
   text: string;
-  choices?: StoryChoice[];
+  choices?: SceneChoice[];
 }
 
-export interface StoryChoice {
+export interface SceneChoice {
+  id: string;
+  type: ChoiceType;
   text: string;
-  story: Story;
+  sceneId: string;
+}
+
+export interface SceneReference {
+  count: number;
+}
+
+export enum ChoiceType {
+  Branch = 'Branch',
+  Jump = 'Jump',
 }
