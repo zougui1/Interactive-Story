@@ -1,4 +1,4 @@
-import { StoryTree } from './features/story-creation/components/StoryTree';
+import { StoryTree } from './features/story/components/StoryTree';
 
 import { defaultScenes, defaultSceneIdStack, defaultSceneReferences } from './mock';
 

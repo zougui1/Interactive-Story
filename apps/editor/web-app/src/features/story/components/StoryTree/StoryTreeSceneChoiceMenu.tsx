@@ -4,11 +4,13 @@ import { Trash2, ArrowUpToLine, EllipsisVertical, Split, Copy } from 'lucide-rea
 import { Dropdown } from '~/components/Dropdown';
 import { copyText } from '~/utils';
 import { defaultSceneIdStack } from '~/mock';
-import { SceneChoice as SceneChoiceData, ChoiceType } from '~/types';
 
 import { useStoryTreeContext } from './context';
 import { Scene } from '../Scene';
 import { ScenePickerDialog } from '../ScenePickerDialog';
+import { defaultStoryData } from '../../defaultStoryData';
+import { ChoiceType } from '../../enums';
+import type { SceneChoice } from '../../types';
 
 export const StoryTreeSceneChoiceMenu = ({ choice, onOpenChange }: StoryTreeSceneChoiceMenuProps) => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -20,7 +22,7 @@ export const StoryTreeSceneChoiceMenu = ({ choice, onOpenChange }: StoryTreeScen
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         scenes={story.scenes}
-        sceneIdStack={defaultSceneIdStack}
+        sceneIdStack={defaultStoryData.sceneIdStack}
         sceneReferences={story.sceneReferences}
         defaultSceneId={choice.type === ChoiceType.Jump ? choice.sceneId : undefined}
         onSubmit={sceneId => story.setChoiceJump(choice.id, sceneId)}
@@ -77,6 +79,6 @@ export const StoryTreeSceneChoiceMenu = ({ choice, onOpenChange }: StoryTreeScen
 }
 
 export interface StoryTreeSceneChoiceMenuProps {
-  choice: SceneChoiceData;
+  choice: SceneChoice;
   onOpenChange: (open: boolean) => void;
 }

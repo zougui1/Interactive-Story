@@ -2,57 +2,15 @@ import { useState } from 'react';
 
 import { Dialog } from '~/components/Dialog';
 import { Input } from '~/components/Input';
-import { Separator } from '~/components/Separator';
 import { Button } from '~/components/Button';
 import { Tabs } from '~/components/Tabs';
-import { Scene, SceneReference } from '~/types';
 
 import { StoryTree } from '../StoryTree';
+import type { SceneReference, Scene } from '../../types';
 
 enum TabType {
   SceneId = 'SceneId',
   Tree = 'Tree',
-}
-
-export const ScenePickerDialog_v1 = ({ open, onClose, scenes, sceneIdStack, sceneReferences }: ScenePickerDialogProps) => {
-  return (
-    <Dialog.Root open={open} onOpenChange={onClose}>
-      <Dialog.Content className="max-w-7xl">
-        <Dialog.Header>
-          <Dialog.Title>Pick a scene to jump to</Dialog.Title>
-        </Dialog.Header>
-
-        <Dialog.Body className="flex flex-col space-y-8 pt-6 h-screen">
-          <div>
-            <Input />
-          </div>
-
-          <Separator />
-
-          <StoryTree
-            readOnly
-            defaultScenes={scenes}
-            defaultSceneIdStack={sceneIdStack}
-            defaultSceneReferences={sceneReferences}
-          />
-        </Dialog.Body>
-
-        <Dialog.Footer>
-          <Dialog.Close asChild>
-            <Button>
-              Cancel
-            </Button>
-          </Dialog.Close>
-
-          <Dialog.Close asChild>
-            <Button>
-              Choose scene
-            </Button>
-          </Dialog.Close>
-        </Dialog.Footer>
-      </Dialog.Content>
-    </Dialog.Root>
-  );
 }
 
 export const ScenePickerDialog = ({ open, defaultSceneId = '', onClose, onSubmit, scenes, sceneIdStack, sceneReferences }: ScenePickerDialogProps) => {

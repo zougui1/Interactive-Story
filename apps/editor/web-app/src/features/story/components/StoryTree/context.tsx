@@ -1,7 +1,8 @@
 import { createContext, useContext, useMemo, useState, useCallback } from 'react';
 import { nanoid } from 'nanoid';
 
-import { ChoiceType, SceneReference, type Scene } from '~/types';
+import { ChoiceType } from '../../enums';
+import type { SceneReference, Scene } from '../../types';
 
 export interface StoryTreeState {
   readOnly?: boolean;
@@ -26,8 +27,6 @@ export const StoryTreeProvider = ({ children, readOnly, defaultScenes, defaultSc
   const [scenes, setScenes] = useState(defaultScenes);
   const [sceneIdStack, setSceneIdStack] = useState(defaultSceneIdStack);
   const [sceneReferences, setSceneReferences] = useState(defaultSceneReferences);
-
-  console.log('scenes:', Object.keys(scenes).length)
 
   const addChoice = useCallback(() => {
     setScenes(prevScenes => {
@@ -222,8 +221,6 @@ export const StoryTreeProvider = ({ children, readOnly, defaultScenes, defaultSc
         const prevSceneReference = sceneReferences[affectedChoice.sceneId];
         const nextSceneReference = sceneReferences[sceneId];
 
-        console.log('prevSceneReference:', prevSceneReference)
-
         const newSceneReferences = {
           ...sceneReferences,
           [affectedChoice.sceneId]: {
@@ -233,9 +230,6 @@ export const StoryTreeProvider = ({ children, readOnly, defaultScenes, defaultSc
             count: nextSceneReference ? nextSceneReference.count + 1 : 0,
           },
         };
-
-        console.log(affectedChoice.sceneId, 'refs:', newSceneReferences[affectedChoice.sceneId]?.count);
-        console.log(sceneId, 'refs:', newSceneReferences[sceneId]?.count);
 
         if (newSceneReferences[affectedChoice.sceneId].count <= 0) {
           delete newSceneReferences[affectedChoice.sceneId];

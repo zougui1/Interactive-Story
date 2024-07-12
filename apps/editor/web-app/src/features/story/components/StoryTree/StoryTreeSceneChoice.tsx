@@ -3,11 +3,12 @@ import { ChevronDown, ArrowUpToLine } from 'lucide-react';
 
 import { Tooltip } from '~/components/Tooltip';
 import { Textarea } from '~/components/Textarea';
-import { SceneChoice as SceneChoiceData, ChoiceType } from '~/types';
 
 import { useStoryTreeContext } from './context';
 import { StoryTreeSceneChoiceMenu } from './StoryTreeSceneChoiceMenu';
 import { Scene } from '../Scene';
+import { ChoiceType } from '../../enums';
+import type { SceneChoice } from '../../types';
 
 export const StoryTreeSceneChoice = ({ choice, index }: StoryTreeSceneChoiceProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -62,6 +63,6 @@ export const StoryTreeSceneChoice = ({ choice, index }: StoryTreeSceneChoiceProp
 }
 
 export interface StoryTreeSceneChoiceProps {
-  choice: SceneChoiceData;
+  choice: SceneChoice;
   index: number;
 }

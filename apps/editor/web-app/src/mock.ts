@@ -1,10 +1,11 @@
 import { nanoid } from 'nanoid';
 
-import { Scene, ChoiceType } from './types';
+import { ChoiceType } from './features/story/enums';
+import type { Scene } from './features/story/types';
 
 export const defaultScenes = {
-  aaaa: {
-    id: 'aaaa',
+  root: {
+    id: 'root',
     text: `As the days grow shorter and the air turns crisp, the beauty of autumn unfolds in a spectacular display of color. Leaves transition from the lush greens of summer to a vibrant palette of reds, oranges, and yellows, creating a tapestry of hues that blanket the landscape. The scent of fallen leaves mingles with the earth, evoking memories of cozy sweaters and warm drinks by the fire. Each step through the fallen foliage produces a satisfying crunch, a reminder of nature's cycle and the promise of renewal. Autumn is a season that invites reflection, a time to slow down and appreciate the fleeting beauty of nature's transformation.`,
     choices: [
       {
@@ -53,5 +54,4 @@ export const defaultSceneReferences = {
   },
 };
 
-export const defaultTree = defaultScenes.aaaa satisfies Scene;
-export const defaultSceneIdStack = [defaultScenes.aaaa.id];
+export const defaultSceneIdStack = [defaultScenes.root.id];

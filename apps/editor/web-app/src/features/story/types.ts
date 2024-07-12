@@ -1,3 +1,5 @@
+import { ChoiceType } from './enums';
+
 export interface Scene {
   id: string;
   text: string;
@@ -13,9 +15,4 @@ export interface SceneChoice {
 
 export interface SceneReference {
   count: number;
-}
-
-export enum ChoiceType {
-  Branch = 'Branch',
-  Jump = 'Jump',
 }
