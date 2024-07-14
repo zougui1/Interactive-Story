@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import { Trash2, ArrowUpToLine, EllipsisVertical, Split, Copy } from 'lucide-react';
 
+import { ChoiceType, type SceneChoice } from '@zougui/interactive-story.story';
+
 import { Dropdown } from '~/components/Dropdown';
 import { copyText } from '~/utils';
-import { defaultSceneIdStack } from '~/mock';
 
 import { useStoryTreeContext } from './context';
 import { Scene } from '../Scene';
 import { ScenePickerDialog } from '../ScenePickerDialog';
-import { defaultStoryData } from '../../defaultStoryData';
-import { ChoiceType } from '../../enums';
-import type { SceneChoice } from '../../types';
+import { rootId } from '../../defaultStoryData';
 
 export const StoryTreeSceneChoiceMenu = ({ choice, onOpenChange }: StoryTreeSceneChoiceMenuProps) => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -21,9 +20,10 @@ export const StoryTreeSceneChoiceMenu = ({ choice, onOpenChange }: StoryTreeScen
       <ScenePickerDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        scenes={story.scenes}
-        sceneIdStack={defaultStoryData.sceneIdStack}
-        sceneReferences={story.sceneReferences}
+        story={{
+          ...story,
+          sceneIdStack: [rootId],
+        }}
         defaultSceneId={choice.type === ChoiceType.Jump ? choice.sceneId : undefined}
         onSubmit={sceneId => story.setChoiceJump(choice.id, sceneId)}
       />

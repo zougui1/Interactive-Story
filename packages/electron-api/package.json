@@ -1,0 +1,33 @@
+{
+  "name": "@zougui/interactive-story.electron-api",
+  "version": "0.1.13",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "nodemon lib",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --collectCoverage",
+    "compile": "tsc --project .",
+    "compile:watch": "npm run compile -- --watch",
+    "clean": "rimraf ./lib & rimraf tsconfig.tsbuildinfo",
+    "build": "npm run clean && npm run compile",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@zougui/interactive-story.story": "^0.1.2",
+    "nanoid": "^3.3.7",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "jest": "^29.4.3",
+    "rimraf": "^4.1.2",
+    "ts-jest": "^29.0.5",
+    "typescript": "^4.9.5"
+  },
+  "keywords": [],
+  "author": "Zougui",
+  "license": "ISC"
+}

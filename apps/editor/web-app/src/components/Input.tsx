@@ -59,7 +59,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({ className, clas
 Input.displayName = 'Input';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
+  label?: React.ReactNode;
   helperText?: string;
   error?: boolean;
   classes?: Partial<Record<'label' | 'input' | 'helperText', string>>;

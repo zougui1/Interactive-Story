@@ -1,22 +1,23 @@
-import type { Scene, SceneReference } from './types';
+import type { Story } from '@zougui/interactive-story.story';
+import { nanoid } from 'nanoid';
 
-export const defaultStoryData = {
-  scenes: {
-    root: {
-      id: 'root',
-      text: '',
+export const rootId = 'root';
+
+export const createDefaultStoryData = () => {
+  return {
+    id: nanoid(),
+
+    scenes: {
+      [rootId]: {
+        id: rootId,
+        text: '',
+      },
     },
-  },
 
-  sceneReferences: {
-    root: { count: 1 },
-  },
+    sceneReferences: {
+      [rootId]: { count: 1 },
+    },
 
-  sceneIdStack: ['root'],
-} satisfies Data;
-
-type Data = {
-  scenes: Record<string, Scene>;
-  sceneReferences: Record<string, SceneReference>;
-  sceneIdStack: string[];
-};
+    sceneIdStack: [rootId],
+  } satisfies Story;
+}

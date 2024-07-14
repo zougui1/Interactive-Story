@@ -1,15 +1,12 @@
-import { StoryTree } from './features/story/components/StoryTree';
+import { Provider } from 'react-redux';
 
-import { defaultScenes, defaultSceneIdStack, defaultSceneReferences } from './mock';
+import { Story } from './features/story/screens/Story';
+import { store } from './store';
 
 export const App = () => {
   return (
-    <div className="flex justify-center container mx-auto pt-8">
-      <StoryTree
-        defaultScenes={defaultScenes}
-        defaultSceneIdStack={defaultSceneIdStack}
-        defaultSceneReferences={defaultSceneReferences}
-      />
-    </div>
+    <Provider store={store}>
+      <Story />
+    </Provider>
   );
 }

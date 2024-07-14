@@ -74,9 +74,7 @@ DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
 
 const DropdownMenuItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
-    inset?: boolean
-  }
+  DropdownMenuItemProps
 >(({ className, inset, ...props }, ref) => (
   <DropdownMenuPrimitive.Item
     ref={ref}
@@ -89,6 +87,10 @@ const DropdownMenuItem = React.forwardRef<
   />
 ))
 DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
+
+export interface DropdownMenuItemProps extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> {
+  inset?: boolean
+}
 
 const DropdownMenuCheckboxItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
@@ -195,4 +197,8 @@ export const Dropdown = {
   SubContent: DropdownMenuSubContent,
   SubTrigger: DropdownMenuSubTrigger,
   RadioGroup: DropdownMenuRadioGroup,
+};
+
+export type {
+
 };

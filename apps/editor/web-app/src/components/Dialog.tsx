@@ -109,8 +109,9 @@ DialogDescription.displayName = DialogPrimitive.Description.displayName
 const DialogBody = React.forwardRef<
   HTMLDivElement,
   DialogBodyProps
->(({ className, ...rest }) => (
+>(({ className, ...rest }, ref) => (
   <div
+    ref={ref}
     className={cn(
       'max-h-4xl overflow-y-auto pl-1 pr-4 py-6',
       className,

@@ -18,6 +18,9 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
+    "@reduxjs/toolkit": "^2.2.6",
+    "@zougui/interactive-story.electron-api": "^0.1.13",
+    "@zougui/interactive-story.story": "^0.1.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.407.0",
@@ -25,6 +28,8 @@
     "radash": "^12.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hotkeys-hook": "^4.5.0",
+    "react-redux": "^9.1.2",
     "tailwind-merge": "^2.4.0",
     "tailwind-variants": "^0.2.1",
     "tailwindcss-animate": "^1.0.7"
@@ -41,6 +46,7 @@
     "eslint-plugin-react-refresh": "^0.4.7",
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.4",
+    "type-fest": "^4.21.0",
     "typescript": "^5.2.2",
     "vite": "^5.3.1",
     "vite-tsconfig-paths": "^4.3.2"

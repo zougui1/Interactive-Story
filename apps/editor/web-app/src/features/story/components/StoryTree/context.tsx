@@ -1,11 +1,11 @@
-import { createContext, useContext, useMemo, useState, useCallback } from 'react';
+import { createContext, useContext, useMemo, useState, useCallback, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 
-import { ChoiceType } from '../../enums';
-import type { SceneReference, Scene } from '../../types';
+import { ChoiceType, type Story, type Scene, type SceneReference } from '@zougui/interactive-story.story';
 
 export interface StoryTreeState {
   readOnly?: boolean;
+  id: string;
   scenes: Record<string, Scene>;
   sceneReferences: Record<string, SceneReference>;
   sceneIdStack: string[];
@@ -23,10 +23,20 @@ export interface StoryTreeState {
 
 const StoryTreeContext = createContext<StoryTreeState | undefined>(undefined);
 
-export const StoryTreeProvider = ({ children, readOnly, defaultScenes, defaultSceneIdStack, defaultSceneReferences, onCurrentSceneChange }: StoryTreeProviderProps) => {
-  const [scenes, setScenes] = useState(defaultScenes);
-  const [sceneIdStack, setSceneIdStack] = useState(defaultSceneIdStack);
-  const [sceneReferences, setSceneReferences] = useState(defaultSceneReferences);
+export const StoryTreeProvider = ({ children, readOnly, defaultStory, onCurrentSceneChange, onChange }: StoryTreeProviderProps) => {
+  const [id] = useState(defaultStory.id);
+  const [scenes, setScenes] = useState(defaultStory.scenes);
+  const [sceneIdStack, setSceneIdStack] = useState(defaultStory.sceneIdStack);
+  const [sceneReferences, setSceneReferences] = useState(defaultStory.sceneReferences);
+
+  useEffect(() => {
+    onChange?.({
+      id,
+      scenes,
+      sceneIdStack,
+      sceneReferences,
+    });
+  }, [id, scenes, sceneIdStack, sceneReferences]);
 
   const addChoice = useCallback(() => {
     setScenes(prevScenes => {
@@ -294,6 +304,7 @@ export const StoryTreeProvider = ({ children, readOnly, defaultScenes, defaultSc
 
     return {
       readOnly,
+      id,
       scenes,
       sceneIdStack,
       sceneReferences,
@@ -310,6 +321,7 @@ export const StoryTreeProvider = ({ children, readOnly, defaultScenes, defaultSc
     };
   }, [
     readOnly,
+    id,
     scenes,
     sceneIdStack,
     sceneReferences,
@@ -332,11 +344,10 @@ export const StoryTreeProvider = ({ children, readOnly, defaultScenes, defaultSc
 
 export interface StoryTreeProviderProps {
   readOnly?: boolean;
-  defaultScenes: Record<string, Scene>;
-  defaultSceneReferences: Record<string, SceneReference>;
-  defaultSceneIdStack: string[];
+  defaultStory: Story;
   children?: React.ReactNode;
   onCurrentSceneChange?: (currentScene: Scene) => void;
+  onChange?: (story: Story) => void;
 }
 
 export const useStoryTreeContext = (): StoryTreeState => {

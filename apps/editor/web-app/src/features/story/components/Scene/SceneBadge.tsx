@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import { tv, type VariantProps } from 'tailwind-variants';
 import { Slot } from '@radix-ui/react-slot';
+import type { SetRequired } from 'type-fest';
 
 import { useSceneContext } from './context';
 
@@ -37,7 +38,7 @@ export const SceneBadge = forwardRef<HTMLSpanElement, SceneBadgeProps>(({ classN
 
 SceneBadge.displayName = 'SceneBadge';
 
-export interface SceneBadgeProps extends VariantProps<typeof badge> {
+export interface SceneBadgeProps extends SetRequired<VariantProps<typeof badge>, 'position'> {
   showOnHoverOnly?: boolean;
   asChild?: boolean;
   className?: string;

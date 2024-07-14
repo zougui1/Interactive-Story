@@ -3,3 +3,4 @@ coverage/
 lib/
 tsconfig.tsbuildinfo
 .history
+.env

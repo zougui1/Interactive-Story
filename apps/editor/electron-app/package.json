@@ -1,0 +1,37 @@
+{
+  "name": "Interactive Story Editor",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "electron lib/index.js",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --collectCoverage",
+    "compile": "tsc --project .",
+    "compile:watch": "npm run compile -- --watch",
+    "clean": "rimraf ./lib & rimraf tsconfig.tsbuildinfo",
+    "build": "npm run clean && npm run compile",
+    "prepublishOnly": "npm run build && npm run test:coverage"
+  },
+  "dependencies": {
+    "@zougui/common.string-utils": "^0.2.1",
+    "@zougui/interactive-story.electron-api": "^0.1.13",
+    "@zougui/interactive-story.story": "^0.1.2",
+    "dotenv": "^16.4.5",
+    "env-var": "^7.5.0",
+    "fs-extra": "^11.1.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^18.19.39",
+    "electron": "^31.2.0",
+    "rimraf": "^4.1.2",
+    "typescript": "^5.5.3"
+  },
+  "keywords": [],
+  "author": "Zougui",
+  "license": "ISC"
+}
