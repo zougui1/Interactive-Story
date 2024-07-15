@@ -1,19 +1,13 @@
-import zlib from 'node:zlib';
-import { promisify } from 'node:util';
-
 import { dialog } from 'electron';
-import fs from 'fs-extra';
 
-import { storySchema, type Story } from '@zougui/interactive-story.story';
+import { Zis } from '@zougui/interactive-story.zis';
+import type { Story } from '@zougui/interactive-story.story';
 
-import { Zis } from './Zis';
-
-const gzip = promisify(zlib.gzip);
-const gunzip = promisify(zlib.gunzip);
+import { env } from '../../env';
 
 const zisFile = {
-  extensions: ['zis'],
-  name: 'Interactive Story',
+  extensions: [Zis.extension],
+  name: Zis.name,
 };
 
 export const openFile = async () => {
@@ -27,7 +21,7 @@ export const openFile = async () => {
   }
 
   const [filePath] = result.filePaths;
-  const story = await Zis.readFile(filePath);
+  const story = await Zis.readFile(filePath, env.staticKey);
 
   return { story, filePath };
 }
@@ -39,7 +33,7 @@ export const saveFile = async (options: SaveFileOptions) => {
     return;
   }
 
-  await Zis.writeFile(filePath, options.story);
+  await Zis.writeFile(filePath, options.story, env.staticKey);
 
   return { filePath };
 }

@@ -17,6 +17,9 @@ importers:
       '@zougui/interactive-story.story':
         specifier: ^0.1.2
         version: 0.1.2
+      '@zougui/interactive-story.zis':
+        specifier: ^0.1.1
+        version: 0.1.1
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -95,6 +98,9 @@ packages:
 
   '@zougui/interactive-story.story@0.1.2':
     resolution: {integrity: sha512-2/ycq6s8ek4Iy9H1+oMbTou4OvbtM6BvlutE7mVw7h1gnGHSumieGdjJtl9QKGVQd9evgDKDPMqXqkugOStxnA==}
+
+  '@zougui/interactive-story.zis@0.1.1':
+    resolution: {integrity: sha512-igWbVL4YZ5pxpe7KrhsOsNoCMaBPDT0T4CFEAa2sdWnLFxaMhsucjG8SgZcZpsYR6zYq1GbZg/x43avT134NVQ==}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -487,6 +493,12 @@ snapshots:
 
   '@zougui/interactive-story.story@0.1.2':
     dependencies:
+      zod: 3.23.8
+
+  '@zougui/interactive-story.zis@0.1.1':
+    dependencies:
+      '@zougui/interactive-story.story': 0.1.2
+      fs-extra: 11.2.0
       zod: 3.23.8
 
   balanced-match@1.0.2: {}

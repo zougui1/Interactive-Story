@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "commonjs",
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "sourceMap": true,
+    "declarationMap": true,
+    "inlineSources": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "preserveConstEnums": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "noEmitOnError": true,
+    "moduleResolution": "node",
+    "lib": ["esnext", "DOM", "DOM.Iterable"],
+    "types": ["jest", "node"],
+    "rootDir": "src",
+    "outDir": "lib",
+    "target": "ESNext"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.*"]
+}
