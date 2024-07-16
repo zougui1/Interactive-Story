@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import type zod from 'zod';
 
-import type { ElectronRequest, RouteDefinition } from './types';
+import type { ElectronRequest, RouteDefinition } from '@zougui/interactive-story.electron-utils';
 
 class ElectronClass {
   debug = false;

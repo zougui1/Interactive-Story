@@ -1,9 +1,8 @@
-import zod from 'zod';
+import type zod from 'zod';
 import type { BrowserWindow } from 'electron';
 
-import type { ElectronRequest, RouteDefinition } from '@zougui/interactive-story.electron-api';
-
-import { normalizePath } from '../path';
+import { normalizePath } from './utils';
+import type { ElectronRequest, RouteDefinition } from './types';
 
 export class Router {
   handlers: Record<string, Handler> = {};

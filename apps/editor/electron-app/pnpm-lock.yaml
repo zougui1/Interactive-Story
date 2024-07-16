@@ -12,8 +12,11 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1
       '@zougui/interactive-story.electron-api':
-        specifier: ^0.1.13
-        version: 0.1.13
+        specifier: ^0.1.14
+        version: 0.1.14
+      '@zougui/interactive-story.electron-utils':
+        specifier: ^0.1.3
+        version: 0.1.3(electron@31.2.0)
       '@zougui/interactive-story.story':
         specifier: ^0.1.2
         version: 0.1.2
@@ -93,8 +96,13 @@ packages:
   '@zougui/common.string-utils@0.2.1':
     resolution: {integrity: sha512-UT+g8ScKCfYlbXhMJ51Ehjyp+gnvXKK/P8Nv9PQeqPru/JI4kwwrWc+2xxI8j3Zv+lr5W+9TZGM5AS2PZuz4DA==}
 
-  '@zougui/interactive-story.electron-api@0.1.13':
-    resolution: {integrity: sha512-lkr8zvd0wLQCS4x7bvcKMlkLaefQpAUxcf3TzLEzRr8VZrkQ7pHXdL0zqVyIcFsmvr11FMKMhNTW8fEY6E6NUQ==}
+  '@zougui/interactive-story.electron-api@0.1.14':
+    resolution: {integrity: sha512-cNWJW2aihYjBK9C8d0/aOVVnLYxjIWSgNbOzzbUVq4pX2q5oIqoRj0aB1Vw8Xl4hsAwUIW7CdR4x3aHvn96VuA==}
+
+  '@zougui/interactive-story.electron-utils@0.1.3':
+    resolution: {integrity: sha512-EwJdbi8nDcDjxvQzdjAJjZkx0Eb0MDaXlUge6lELbzAoTP+L/n8am8gRq4cprZTF8QeGmifnniKccydhuE/+BQ==}
+    peerDependencies:
+      electron: ^31.2.0
 
   '@zougui/interactive-story.story@0.1.2':
     resolution: {integrity: sha512-2/ycq6s8ek4Iy9H1+oMbTou4OvbtM6BvlutE7mVw7h1gnGHSumieGdjJtl9QKGVQd9evgDKDPMqXqkugOStxnA==}
@@ -485,11 +493,16 @@ snapshots:
     dependencies:
       radash: 10.9.0
 
-  '@zougui/interactive-story.electron-api@0.1.13':
+  '@zougui/interactive-story.electron-api@0.1.14':
     dependencies:
       '@zougui/interactive-story.story': 0.1.2
       nanoid: 3.3.7
       zod: 3.23.8
+
+  '@zougui/interactive-story.electron-utils@0.1.3(electron@31.2.0)':
+    dependencies:
+      '@zougui/common.string-utils': 0.2.1
+      electron: 31.2.0
 
   '@zougui/interactive-story.story@0.1.2':
     dependencies:

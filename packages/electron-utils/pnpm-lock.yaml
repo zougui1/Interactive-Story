@@ -8,22 +8,16 @@ importers:
 
   .:
     dependencies:
-      '@zougui/interactive-story.story':
-        specifier: ^0.1.2
-        version: 0.1.2
-      nanoid:
-        specifier: ^3.3.7
-        version: 3.3.7
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
+      '@zougui/common.string-utils':
+        specifier: ^0.2.1
+        version: 0.2.1
     devDependencies:
       '@types/jest':
         specifier: ^29.4.0
         version: 29.5.12
-      '@zougui/interactive-story.electron-utils':
-        specifier: ^0.1.1
-        version: 0.1.1(electron@31.2.1)
+      electron:
+        specifier: ^31.2.0
+        version: 31.2.0
       jest:
         specifier: ^29.4.3
         version: 29.7.0(@types/node@20.14.10)
@@ -36,6 +30,9 @@ importers:
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
 
 packages:
 
@@ -380,14 +377,6 @@ packages:
   '@zougui/common.string-utils@0.2.1':
     resolution: {integrity: sha512-UT+g8ScKCfYlbXhMJ51Ehjyp+gnvXKK/P8Nv9PQeqPru/JI4kwwrWc+2xxI8j3Zv+lr5W+9TZGM5AS2PZuz4DA==}
 
-  '@zougui/interactive-story.electron-utils@0.1.1':
-    resolution: {integrity: sha512-OtHT1XHSjmEmdWUNkgfVrONgs0J72ZR3QqRqig9mFHuCkg6fBI7N9FEAYhvUhC3+RpDCEIxARYzkr/cWzjjFLg==}
-    peerDependencies:
-      electron: ^31.2.0
-
-  '@zougui/interactive-story.story@0.1.2':
-    resolution: {integrity: sha512-2/ycq6s8ek4Iy9H1+oMbTou4OvbtM6BvlutE7mVw7h1gnGHSumieGdjJtl9QKGVQd9evgDKDPMqXqkugOStxnA==}
-
   ansi-escapes@4.3.2:
     resolution: {integrity: sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ==}
     engines: {node: '>=8'}
@@ -617,8 +606,8 @@ packages:
   electron-to-chromium@1.4.827:
     resolution: {integrity: sha512-VY+J0e4SFcNfQy19MEoMdaIcZLmDCprqvBtkii1WTCTQHpRvf5N8+3kTYCgL/PcntvwQvmMJWTuDPsq+IlhWKQ==}
 
-  electron@31.2.1:
-    resolution: {integrity: sha512-g3CLKjl4yuXt6VWm/KpgEjYYhFiCl19RgUn8lOC8zV/56ZXAS3+mqV4wWzicE/7vSYXs6GRO7vkYRwrwhX3Gaw==}
+  electron@31.2.0:
+    resolution: {integrity: sha512-5w+kjOsGiTXytPSErBPNp/3znnuEMKc42RD41MqRoQkiYaR8x/Le2+qWk1cL60UwE/67oeKnOHnnol8xEuldGg==}
     engines: {node: '>= 12.20.55'}
     hasBin: true
 
@@ -1128,11 +1117,6 @@ packages:
 
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
-
-  nanoid@3.3.7:
-    resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
 
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
@@ -2014,15 +1998,6 @@ snapshots:
     dependencies:
       radash: 10.9.0
 
-  '@zougui/interactive-story.electron-utils@0.1.1(electron@31.2.1)':
-    dependencies:
-      '@zougui/common.string-utils': 0.2.1
-      electron: 31.2.1
-
-  '@zougui/interactive-story.story@0.1.2':
-    dependencies:
-      zod: 3.23.8
-
   ansi-escapes@4.3.2:
     dependencies:
       type-fest: 0.21.3
@@ -2268,7 +2243,7 @@ snapshots:
 
   electron-to-chromium@1.4.827: {}
 
-  electron@31.2.1:
+  electron@31.2.0:
     dependencies:
       '@electron/get': 2.0.3
       '@types/node': 20.14.10
@@ -2963,8 +2938,6 @@ snapshots:
   minipass@7.1.2: {}
 
   ms@2.1.2: {}
-
-  nanoid@3.3.7: {}
 
   natural-compare@1.4.0: {}
 

@@ -1,4 +1,4 @@
-import type { IContextBridge } from '../types';
+import type { IContextBridge } from '@zougui/interactive-story.electron-utils';
 
 declare global {
   export interface Window {

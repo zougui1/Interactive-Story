@@ -1,6 +1,7 @@
 import zod from 'zod';
 
 import { storySchema } from '@zougui/interactive-story.story';
+import { ElectronProcedure } from '@zougui/interactive-story.electron-utils';
 
 export const electronApi = {
   fs: {
@@ -35,4 +36,4 @@ export const electronApi = {
       response: zod.void(),
     },
   },
-};
+} satisfies ElectronProcedure;

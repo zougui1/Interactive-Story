@@ -1,6 +1,6 @@
 import { electronApi } from '@zougui/interactive-story.electron-api';
+import { Router } from '@zougui/interactive-story.electron-utils';
 
-import { Router } from '../../utils';
 import { title } from '../../constants';
 
 export const router = new Router();

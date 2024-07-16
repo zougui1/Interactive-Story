@@ -1,4 +1,4 @@
-import { ElectronRequest } from './ElectronRequest';
+import { ElectronRequest } from '../router';
 
 export interface IContextBridge {
   send(channel: string, data?: unknown): void;

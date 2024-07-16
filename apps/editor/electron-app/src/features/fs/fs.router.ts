@@ -1,8 +1,8 @@
 import { electronApi } from '@zougui/interactive-story.electron-api';
+import { Router } from '@zougui/interactive-story.electron-utils';
 
 import { openFile, saveFile } from './fs.service';
 import { getFileAsTitle } from './utils';
-import { Router } from '../../utils';
 
 export const router = new Router();
 

@@ -7,8 +7,11 @@ config({
   path: path.join(__dirname, '../.env'),
 });
 
+const nodeEnv = envVar.get('NODE_ENV').default('development').asString();
+
 export const env = {
-  nodeEnv: envVar.get('NODE_ENV').default('development').asString(),
+  nodeEnv,
+  isDev: nodeEnv === 'development',
   staticKey: envVar.get('STATIC_KEY').required().asString(),
   appFile: envVar.get('APP_FILE').required().asString(),
   appUrl: envVar.get('APP_URL').required().asString(),

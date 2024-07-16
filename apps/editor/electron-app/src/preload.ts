@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-import type { IContextBridge, ElectronRequest } from '@zougui/interactive-story.electron-api';
+import type { IContextBridge, ElectronRequest } from '@zougui/interactive-story.electron-utils';
 
 export class ContextBridge implements IContextBridge {
   send = (channel: string, data: unknown): void => {
