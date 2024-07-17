@@ -1,22 +1,21 @@
-import { contextBridge } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from 'electron';
 
-// Custom APIs for renderer
-const api = {}
+import type { IContextBridge, ElectronRequest } from '@zougui/interactive-story.electron-utils';
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
-if (process.contextIsolated) {
-  try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
-  } catch (error) {
-    console.error(error)
+export class ContextBridge implements IContextBridge {
+  send = (channel: string, data: unknown): void => {
+    ipcRenderer.send(channel, data);
   }
-} else {
-  // @ts-ignore (define in dts)
-  window.electron = electronAPI
-  // @ts-ignore (define in dts)
-  window.api = api
+
+  on = (channel: string, listener: (event: unknown, request: ElectronRequest) => void): (() => void) => {
+    ipcRenderer.on(channel, listener);
+    return () => ipcRenderer.off(channel, listener);
+  }
+
+  once = (channel: string, listener: (event: unknown, request: ElectronRequest) => void): (() => void) => {
+    ipcRenderer.once(channel, listener);
+    return () => ipcRenderer.off(channel, listener);
+  }
 }
+
+contextBridge.exposeInMainWorld('electron', new ContextBridge());
