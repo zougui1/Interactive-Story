@@ -52,10 +52,6 @@
       0px 0px 3px #000;
   }
 
-  .max-h-4xl {
-    max-height: 56rem;
-  }
-
   .region-drag {
     -webkit-app-region: drag;
   }

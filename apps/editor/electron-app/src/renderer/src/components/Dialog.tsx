@@ -109,14 +109,18 @@ DialogDescription.displayName = DialogPrimitive.Description.displayName
 const DialogBody = React.forwardRef<
   HTMLDivElement,
   DialogBodyProps
->(({ className, ...rest }, ref) => (
+>(({ className, style, ...rest }, ref) => (
   <div
+    {...rest}
     ref={ref}
     className={cn(
-      'max-h-4xl overflow-y-auto pl-1 pr-4 py-6',
+      'overflow-y-auto pl-1 pr-4 py-6',
       className,
     )}
-    {...rest}
+    style={{
+      maxHeight: 'min(calc(100vh - 150px), 56rem)',
+      ...style,
+    }}
   />
 ));
 

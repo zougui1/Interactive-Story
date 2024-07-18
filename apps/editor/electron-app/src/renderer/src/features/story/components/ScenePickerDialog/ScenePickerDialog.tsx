@@ -42,7 +42,7 @@ export const ScenePickerDialog = ({ open, defaultSceneId = '', onClose, onSubmit
           <Dialog.Title>Pick a scene to jump to</Dialog.Title>
         </Dialog.Header>
 
-        <Dialog.Body className="flex flex-col items-center space-y-8">
+        <Dialog.Body className="flex flex-col items-center space-y-8 max-h-fit-min">
           <Tabs.Root
             onValueChange={v => setTabValue(v as TabType)}
             value={tabValue}
