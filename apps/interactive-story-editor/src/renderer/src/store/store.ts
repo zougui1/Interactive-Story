@@ -3,16 +3,17 @@ import { combineSlices, configureStore } from '@reduxjs/toolkit';
 
 import { storySlice } from '@renderer/features/story/storySlice';
 
-const rootReducer = combineSlices(storySlice)
+const rootReducer = combineSlices(storySlice);
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const makeStore = (preloadedState?: Partial<RootState>) => {
   return configureStore({
     reducer: rootReducer,
     preloadedState,
   });
-}
+};
 
-export const store = makeStore()
+export const store = makeStore();
 
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppStore = typeof store;

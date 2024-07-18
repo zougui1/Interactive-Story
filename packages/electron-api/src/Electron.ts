@@ -53,7 +53,7 @@ class ElectronClass {
           }
 
           cleanup();
-          reject(response);
+          reject(response.body);
         }
       });
 

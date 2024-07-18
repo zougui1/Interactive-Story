@@ -1,9 +1,13 @@
 import path from 'node:path';
 
-import { app } from 'electron';
-import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import type { BrowserWindow } from 'electron';
+import { electronApp, is } from '@electron-toolkit/utils';
 
-import { createElectronWindow, createElectronApp, Router } from '@zougui/interactive-story.electron-utils';
+import {
+  createElectronWindow,
+  createElectronApp,
+  Router,
+} from '@zougui/interactive-story.electron-utils';
 import { electronApi } from '@zougui/interactive-story.electron-api';
 
 import * as features from './features';
@@ -17,7 +21,7 @@ for (const feature of Object.values(features)) {
   router.use(feature.router);
 }
 
-const createWindow = () => {
+const createWindow = (): BrowserWindow => {
   const mainWindow = createElectronWindow({
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -39,19 +43,12 @@ const createWindow = () => {
   return mainWindow;
 }
 
-export const createApp = async () => {
+export const createApp = async (): Promise<void> => {
   await createElectronApp({
     createWindow,
     procedure: electronApi,
     router,
   });
 
-  electronApp.setAppUserModelId('com.zougui.interactive-story.editor.app');
-
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
-  app.on('browser-window-created', (_, window) => {
-    optimizer.watchWindowShortcuts(window);
-  });
-}
+  electronApp.setAppUserModelId('com.electron.interactive-story-editor');
+};
