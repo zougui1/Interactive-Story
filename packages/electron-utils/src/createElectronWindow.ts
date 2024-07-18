@@ -1,9 +1,18 @@
-import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
+import { BrowserWindow, screen, type BrowserWindowConstructorOptions } from 'electron';
+
+const defaultWidth = 1920;
+const defaultHeight = 1080;
 
 export const createElectronWindow = (options?: CreateElectronWindowOptions): BrowserWindow => {
-  const win = new BrowserWindow({
-    width: 1920,
-    height: 1080,
+  const point = screen.getCursorScreenPoint();
+  const pointingDisplay = screen.getDisplayNearestPoint(point);
+
+  const width = Math.min(defaultWidth, pointingDisplay.bounds.width);
+  const height = Math.min(defaultHeight, pointingDisplay.bounds.height);
+
+  const browserWindow = new BrowserWindow({
+    width,
+    height,
     ...options,
     webPreferences: {
       nodeIntegration: false,
@@ -15,14 +24,18 @@ export const createElectronWindow = (options?: CreateElectronWindowOptions): Bro
   });
 
   if (options?.debug) {
-    win.webContents.openDevTools();
+    browserWindow.webContents.openDevTools();
   }
 
   if (options?.menuBarVisible !== undefined) {
-    win.menuBarVisible = options.menuBarVisible;
+    browserWindow.menuBarVisible = options.menuBarVisible;
   }
 
-  return win;
+  if (width >= pointingDisplay.bounds.width && height >= pointingDisplay.bounds.height) {
+    browserWindow.maximize();
+  }
+
+  return browserWindow;
 }
 
 export interface CreateElectronWindowOptions extends BrowserWindowConstructorOptions {
