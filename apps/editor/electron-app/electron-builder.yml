@@ -1,4 +1,4 @@
-appId: com.zougui.interactive-story.editor.app
+appId: com.electron.interactive-story-editor
 productName: Interactive Story Editor
 directories:
   buildResources: build
