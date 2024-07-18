@@ -1,0 +1,10 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "include": ["../interactive-story-editor/electron.vite.config.*", "../interactive-story-editor/src/main/**/*", "../interactive-story-editor/src/preload/**/*"],
+  "compilerOptions": {
+    "composite": true,
+    "types": ["electron-vite/node"],
+    "noImplicitReturns": false,
+    "esModuleInterop": true
+  }
+}
