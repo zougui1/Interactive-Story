@@ -27,6 +27,7 @@ export type SceneReference = zod.infer<typeof sceneReferenceSchema>;
 
 export const storySchema = zod.object({
   id: zod.string(),
+  title: zod.string().min(1),
   scenes: zod.record(sceneSchema),
   sceneIdStack: zod.array(zod.string()).min(1),
   sceneReferences: zod.record(sceneReferenceSchema),

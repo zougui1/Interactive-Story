@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@zougui/interactive-story.story':
-        specifier: ^0.1.2
-        version: 0.1.2
+        specifier: ^0.1.3
+        version: 0.1.3
       nanoid:
         specifier: ^3.3.7
         version: 3.3.7
@@ -385,8 +385,8 @@ packages:
     peerDependencies:
       electron: ^31.2.0
 
-  '@zougui/interactive-story.story@0.1.2':
-    resolution: {integrity: sha512-2/ycq6s8ek4Iy9H1+oMbTou4OvbtM6BvlutE7mVw7h1gnGHSumieGdjJtl9QKGVQd9evgDKDPMqXqkugOStxnA==}
+  '@zougui/interactive-story.story@0.1.3':
+    resolution: {integrity: sha512-dAa7QHnlQZ7KqEXhwwJA2TdrMX8PL7V3807KSjUmuWgX3v2RxiOo1hFmHF0KDo4n6WwvhQNnI0l3EqKWfy/NKg==}
 
   ansi-escapes@4.3.2:
     resolution: {integrity: sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ==}
@@ -2019,7 +2019,7 @@ snapshots:
       '@zougui/common.string-utils': 0.2.1
       electron: 31.2.1
 
-  '@zougui/interactive-story.story@0.1.2':
+  '@zougui/interactive-story.story@0.1.3':
     dependencies:
       zod: 3.23.8
 

@@ -29,11 +29,22 @@ export const electronApi = {
   },
 
   window: {
-    titleReset: {
-      fullPath: '/window/title-reset',
+    title: {
+      reset: {
+        fullPath: '/window/title/reset',
 
-      params: zod.object({}),
-      response: zod.void(),
+        params: zod.object({}),
+        response: zod.void(),
+      },
+
+      set: {
+        fullPath: '/window/title/set',
+
+        params: zod.object({
+          title: zod.string(),
+        }),
+        response: zod.void(),
+      },
     },
   },
 } satisfies ElectronProcedure;

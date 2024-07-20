@@ -12,7 +12,7 @@ export const App = () => {
       <ToastContainer
         position="bottom-right"
         theme="dark"
-        autoClose={false}
+        autoClose={10_000}
         bodyClassName="items-start"
         toastClassName="bg-slate-900"
       />

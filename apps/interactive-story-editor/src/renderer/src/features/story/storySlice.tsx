@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import { fromError } from 'zod-validation-error';
 
 import { Electron, electronApi } from '@zougui/interactive-story.electron-api';
 import type { Story } from '@zougui/interactive-story.story';
@@ -27,7 +27,7 @@ export const storySlice = createAppSlice({
   initialState,
   reducers: (create) => ({
     newStory: create.asyncThunk(
-      async () => await Electron.request(electronApi.window.titleReset, {}),
+      async () => await Electron.request(electronApi.window.title.reset, {}),
       {
         pending: (state) => {
           state.syntheticKey = nanoid();
@@ -37,9 +37,16 @@ export const storySlice = createAppSlice({
       }
     ),
 
-    updateStory: create.reducer((state, action: PayloadAction<Story>) => {
-      state.data = action.payload;
-    }),
+    updateStory: create.asyncThunk(
+      async (story: Story) => {
+        await Electron.request(electronApi.window.title.set, { title: story.title });
+      },
+      {
+        pending: (state, action) => {
+          state.data = action.meta.arg;
+        },
+      },
+    ),
 
     openStory: create.asyncThunk(
       async () => {
@@ -79,8 +86,12 @@ export const saveStory = (options?: SaveOptions): AppThunk => {
         filePath: options?.overwrite ? filePath : undefined,
       });
     } catch (error) {
+      console.log(error, fromError(error).toString())
       toast.error(
-        <ToastMessage label="The file could not be saved." details={getErrorMessage(error)} />
+        <ToastMessage
+          label="The file could not be saved."
+          details={getErrorMessage(error) || fromError(error).message}
+        />
       );
       throw error;
     }

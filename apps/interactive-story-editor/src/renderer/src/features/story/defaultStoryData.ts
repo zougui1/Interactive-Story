@@ -6,6 +6,7 @@ export const rootId = 'root';
 export const createDefaultStoryData = () => {
   return {
     id: nanoid(),
+    title: '',
 
     scenes: {
       [rootId]: {

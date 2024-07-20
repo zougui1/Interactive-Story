@@ -5,6 +5,8 @@ import type { Story } from '@zougui/interactive-story.story';
 
 import { env } from '../../env';
 
+const reInvalidFileNameCharacters = /[/.]/g;
+
 const zisFile = {
   extensions: [Zis.extension],
   name: Zis.name,
@@ -27,7 +29,7 @@ export const openFile = async () => {
 }
 
 export const saveFile = async (options: SaveFileOptions) => {
-  const filePath = options.filePath ?? await getSaveFilePath();
+  const filePath = options.filePath ?? await getSaveFilePath(options.story.title);
 
   if (!filePath) {
     return;
@@ -43,7 +45,7 @@ export interface SaveFileOptions {
   story: Story;
 }
 
-const getSaveFilePath = async () => {
+const getSaveFilePath = async (storyTitle: string) => {
   const result = await dialog.showSaveDialog({
     filters: [
       {
@@ -55,6 +57,7 @@ const getSaveFilePath = async () => {
         name: 'All files',
       },
     ],
+    defaultPath: storyTitle.replaceAll(reInvalidFileNameCharacters, '_'),
   });
 
   if (!result.canceled) {

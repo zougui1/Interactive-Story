@@ -16,23 +16,23 @@ enum ShortcutMap {
 
 export const FileMenu = () => {
   const dispatch = useAppDispatch();
-  const story = useAppSelector(state => state.story.data);
+  const story = useAppSelector((state) => state.story.data);
 
   const handleNew = () => {
     dispatch(newStory());
-  }
+  };
 
   const handleSave = () => {
     dispatch(saveStory({ overwrite: true }));
-  }
+  };
 
   const handleSaveAs = () => {
     dispatch(saveStory());
-  }
+  };
 
   const handleOpen = async () => {
     dispatch(openStory());
-  }
+  };
 
   useHotkeys(ShortcutMap.NewStory, handleNew);
   useHotkeys(ShortcutMap.OpenStory, handleOpen);

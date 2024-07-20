@@ -2,7 +2,7 @@ import { electronApi } from '@zougui/interactive-story.electron-api';
 import { Router } from '@zougui/interactive-story.electron-utils';
 
 import { openFile, saveFile } from './fs.service';
-import { getFileAsTitle } from './utils';
+import { getWindowTitle } from '../../utils';
 
 export const router = new Router();
 
@@ -13,17 +13,15 @@ router.on(electronApi.fs.openFile, async ({ browserWindow }) => {
     return;
   }
 
-  browserWindow.setTitle(getFileAsTitle(result.filePath));
+  browserWindow.setTitle(getWindowTitle(result.story.title));
 
   return result;
 });
-
-
 
 router.on(electronApi.fs.save, async ({ request, browserWindow }) => {
   const result = await saveFile(request.body);
 
   if (result) {
-    browserWindow.setTitle(getFileAsTitle(result.filePath));
+    browserWindow.setTitle(getWindowTitle(request.body.story.title));
   }
 });
