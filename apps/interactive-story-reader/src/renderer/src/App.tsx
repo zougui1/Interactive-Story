@@ -1,13 +1,13 @@
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 
-import { Story } from './features/story/screens/Story';
+import { StoryMain } from './features/story/screens/StoryMain';
 import { store } from './store';
 
 export const App = () => {
   return (
     <Provider store={store}>
-      <Story />
+      <StoryMain />
 
       <ToastContainer
         position="bottom-right"

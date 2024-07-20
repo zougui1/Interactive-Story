@@ -11,7 +11,6 @@ import {
 import { electronApi } from '@zougui/interactive-story.electron-api';
 
 import * as features from './features';
-import { title } from './constants';
 import { env } from './env';
 import icon from '../../resources/icon.png?asset';
 
@@ -27,7 +26,6 @@ const createWindow = (): BrowserWindow => {
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
     },
-    title,
     menuBarVisible: false,
     debug: is.dev,
   });

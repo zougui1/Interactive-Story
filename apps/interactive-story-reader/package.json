@@ -31,10 +31,10 @@
     "@radix-ui/react-tabs": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@reduxjs/toolkit": "^2.2.6",
-    "@zougui/interactive-story.electron-api": "^0.1.15",
+    "@zougui/interactive-story.electron-api": "^0.2.1",
     "@zougui/interactive-story.electron-utils": "^0.1.5",
-    "@zougui/interactive-story.story": "^0.1.2",
-    "@zougui/interactive-story.zis": "^0.1.1",
+    "@zougui/interactive-story.story": "^0.1.3",
+    "@zougui/interactive-story.zis": "^0.1.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "env-var": "^7.5.0",
@@ -49,7 +49,6 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@electron-toolkit/eslint-config-prettier": "^2.0.0",
     "@electron-toolkit/eslint-config-ts": "^2.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@types/node": "^20.14.8",

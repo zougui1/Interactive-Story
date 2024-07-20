@@ -1,1 +1,1 @@
-export const title = 'Interactive Story Reader';
+export const defaultTitle = 'Interactive Story Reader';
