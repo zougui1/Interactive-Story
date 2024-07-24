@@ -43,7 +43,7 @@ export const Story = ({ story }: StoryProps) => {
 
   return (
     <div style={{ zoom: `${zoom}%` }} className="w-full flex flex-col space-y-12 pb-12 text-white">
-      <FadingTextContainer className="space-y-4">
+      <FadingTextContainer className="space-y-4" zoom={zoom}>
         <h1 className="text-5xl font-bold text-center">
           {story.title}
         </h1>
