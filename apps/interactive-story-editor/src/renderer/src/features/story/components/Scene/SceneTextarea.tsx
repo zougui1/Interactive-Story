@@ -8,9 +8,8 @@ export const SceneTextarea = forwardRef<HTMLTextAreaElement, SceneTextareaProps>
     <Textarea
       placeholder="Scene text"
       {...rest}
-      autoFocus
       ref={ref}
-      className={cn('h-full', className)}
+      className={cn('h-full resize-none', className)}
     />
   );
 });
