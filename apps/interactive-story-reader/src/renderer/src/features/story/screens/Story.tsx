@@ -3,12 +3,11 @@ import { Fragment, useEffect, useState } from 'react';
 import type { Story as StoryData, Scene, SceneChoice } from '@zougui/interactive-story.story';
 
 import { Separator } from '@renderer/components/Separator';
-import { useWindowEvent } from '@renderer/hooks';
-import { useAppDispatch, useAppSelector } from '@renderer/store';
+import { scrollToBottom } from '@renderer/utils';
 
 import { ChoiceMenu } from '../components/ChoiceMenu';
 import { FadingTextContainer } from '../components/FadingTextContainer';
-import { changeZoom } from '../storySlice';
+import { useZoom } from '../hooks';
 
 interface PrevScene extends Scene {
   choice: SceneChoice;
@@ -17,8 +16,7 @@ interface PrevScene extends Scene {
 export const Story = ({ story }: StoryProps) => {
   const [prevScenes, setPrevScenes] = useState<PrevScene[]>([]);
   const [currentScene, setCurrentScene] = useState<Scene>(story.scenes.root);
-  const zoom = useAppSelector(state => state.story.zoom);
-  const dispatch = useAppDispatch();
+  const zoom = useZoom();
 
   const handleChoose = (choice: SceneChoice) => {
     setPrevScenes((prevScenes) => {
@@ -28,18 +26,7 @@ export const Story = ({ story }: StoryProps) => {
     setCurrentScene(story.scenes[choice.sceneId]);
   }
 
-  useEffect(() => {
-    window.scrollTo({ top: Number.MAX_SAFE_INTEGER });
-  }, [prevScenes]);
-
-  useWindowEvent('wheel', e => {
-    if (!e.ctrlKey) {
-      return;
-    }
-
-    const zoomDirection = e.deltaY < 0 ? 'in' : 'out';
-    dispatch(changeZoom(zoomDirection));
-  });
+  useEffect(scrollToBottom, [prevScenes]);
 
   return (
     <div style={{ zoom: `${zoom}%` }} className="w-full flex flex-col space-y-12 pb-12 text-white">

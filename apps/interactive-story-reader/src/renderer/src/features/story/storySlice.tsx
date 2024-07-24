@@ -29,8 +29,6 @@ const initialState: StorySlice = {
   zoom: Number(window.localStorage.getItem(zoomKey)) || defaultZoom,
 };
 
-console.log('initialState.zoom', initialState.zoom)
-
 export const storySlice = createAppSlice({
   name: 'story',
   initialState,
