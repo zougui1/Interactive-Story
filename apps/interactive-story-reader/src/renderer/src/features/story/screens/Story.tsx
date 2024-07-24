@@ -5,6 +5,7 @@ import type { Story as StoryData, Scene, SceneChoice } from '@zougui/interactive
 import { Separator } from '@renderer/components/Separator';
 
 import { ChoiceMenu } from '../components/ChoiceMenu';
+import { FadingTextContainer } from '../components/FadingTextContainer';
 
 interface PrevScene extends Scene {
   choice: SceneChoice;
@@ -15,7 +16,6 @@ export const Story = ({ story }: StoryProps) => {
   const [currentScene, setCurrentScene] = useState<Scene>(story.scenes.root);
 
   const handleChoose = (choice: SceneChoice) => {
-    console.log('choice:', choice)
     setPrevScenes((prevScenes) => {
       return [...prevScenes, { ...currentScene, choice }];
     });
@@ -28,19 +28,21 @@ export const Story = ({ story }: StoryProps) => {
   }, [prevScenes]);
 
   return (
-    <div className="w-full flex flex-col space-y-12 pb-12">
-      <h1 className="text-5xl font-bold text-center">
-        {story.title}
-      </h1>
+    <div className="w-full flex flex-col space-y-12 pb-12 text-white">
+      <FadingTextContainer className="space-y-4">
+        <h1 className="text-5xl font-bold text-center">
+          {story.title}
+        </h1>
 
-      {prevScenes.map((prevScene, index) => (
-        <Fragment key={index}>
-          <p>{prevScene.text}</p>
-          <p>{prevScene.choice.text}</p>
-        </Fragment>
-      ))}
+        {prevScenes.map((prevScene, index) => (
+          <Fragment key={index}>
+            <pre>{prevScene.text}</pre>
+            <pre>{prevScene.choice.text}</pre>
+          </Fragment>
+        ))}
+      </FadingTextContainer>
 
-      <p>{currentScene.text}</p>
+      <pre>{currentScene.text}</pre>
 
       <Separator />
 
