@@ -1,3 +1,5 @@
+import { clamp } from '@zougui/common.math-utils';
+
 const defaultZoom = 100;
 
 export const fadeElement = (element: HTMLElement, options: FadeElementOptions = {}) => {
@@ -13,7 +15,7 @@ export const fadeElement = (element: HTMLElement, options: FadeElementOptions = 
   const fadeEnd = 10 / zoomFactor;
   const fadeRange = fadeStart - fadeEnd;
   const distance = top - fadeEnd;
-  const opacity = Math.min(1, Math.max(0.7, distance / fadeRange));
+  const opacity = clamp(distance / fadeRange, 0.7, 1);
 
   element.style.opacity = String(opacity);
 }
