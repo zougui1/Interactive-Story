@@ -5,7 +5,7 @@ import { resetZoom } from '../storySlice';
 
 export const Toolbar = () => {
   const hasStory = useAppSelector(state => Boolean(state.story.data));
-  const zoom = useAppSelector(state => state.story.zoom);
+  const zoom = useAppSelector(state => state.story.settings.zoom);
   const dispatch = useAppDispatch();
 
   const handleResetZoom = () => {

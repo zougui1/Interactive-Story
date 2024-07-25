@@ -8,6 +8,7 @@ import { scrollToBottom } from '@renderer/utils';
 import { ChoiceMenu } from '../components/ChoiceMenu';
 import { FadingTextContainer } from '../components/FadingTextContainer';
 import { useZoom } from '../hooks';
+import { useAppSelector } from '@renderer/store';
 
 interface PrevScene extends Scene {
   choice: SceneChoice;
@@ -17,6 +18,7 @@ export const Story = ({ story }: StoryProps) => {
   const [prevScenes, setPrevScenes] = useState<PrevScene[]>([]);
   const [currentScene, setCurrentScene] = useState<Scene>(story.scenes.root);
   const zoom = useZoom();
+  const fadingText = useAppSelector(state => state.story.settings.fadingText);
 
   const handleChoose = (choice: SceneChoice) => {
     setPrevScenes((prevScenes) => {
@@ -30,7 +32,7 @@ export const Story = ({ story }: StoryProps) => {
 
   return (
     <div style={{ zoom: `${zoom}%` }} className="w-full flex flex-col space-y-12 pb-12 text-white">
-      <FadingTextContainer className="space-y-4" zoom={zoom}>
+      <FadingTextContainer className="space-y-4" zoom={zoom} disabled={!fadingText}>
         <h1 className="text-5xl font-bold text-center">
           {story.title}
         </h1>

@@ -10,23 +10,27 @@ import { createAppSlice } from '@renderer/store';
 
 import { ToastMessage } from '@renderer/components/ToastMessage';
 
-const zoomKey = 'story-zoom';
-
-export interface StorySlice {
-  syntheticKey: string;
+export interface StorySettings {
+  fadingText: boolean;
   /**
    * zoom percentage (100 = 100% = default zoom)
    */
   zoom: number;
+}
+
+export interface StorySlice {
+  syntheticKey: string;
+  settings: StorySettings;
   data?: Story;
   filePath?: string;
 }
 
-const defaultZoom = 100;
-
 const initialState: StorySlice = {
   syntheticKey: nanoid(),
-  zoom: Number(window.localStorage.getItem(zoomKey)) || defaultZoom,
+  settings: {
+    zoom: 100,
+    fadingText: true,
+  },
 };
 
 export const storySlice = createAppSlice({
@@ -57,16 +61,18 @@ export const storySlice = createAppSlice({
     ),
 
     resetZoom: create.reducer((state) => {
-      state.zoom = defaultZoom;
-      window.localStorage.removeItem(zoomKey);
+      state.settings.zoom = initialState.settings.zoom;
     }),
 
     changeZoom: create.reducer((state, action: PayloadAction<'in' | 'out'>) => {
-      const newZoom = action.payload === 'out' ? state.zoom - 10 : state.zoom + 10;
-      state.zoom = clamp(newZoom, 30, 500);
-      window.localStorage.setItem(zoomKey, String(state.zoom));
+      const newZoom = action.payload === 'out' ? state.settings.zoom - 10 : state.settings.zoom + 10;
+      state.settings.zoom = clamp(newZoom, 30, 500);
+    }),
+
+    changeFadingText: create.reducer((state, action: PayloadAction<boolean>) => {
+      state.settings.fadingText = action.payload;
     }),
   }),
 });
 
-export const { openStory, resetZoom, changeZoom } = storySlice.actions;
+export const { openStory, resetZoom, changeZoom, changeFadingText } = storySlice.actions;

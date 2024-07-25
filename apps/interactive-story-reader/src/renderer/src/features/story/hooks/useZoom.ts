@@ -12,7 +12,7 @@ const isWindowScrollAtBottom = (): boolean => {
 
 export const useZoom = (): number => {
   const windowScrollRef = useRef(isWindowScrollAtBottom());
-  const zoom = useAppSelector(state => state.story.zoom);
+  const zoom = useAppSelector(state => state.story.settings.zoom);
   const dispatch = useAppDispatch();
 
   useWindowEvent('wheel', e => {

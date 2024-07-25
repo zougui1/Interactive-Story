@@ -4,18 +4,25 @@ import { useWindowEvent } from '@renderer/hooks';
 
 import { fadeElement } from './utils';
 
-export const FadingTextContainer = ({ zoom, ...rest }: FadingTextContainerProps) => {
+export const FadingTextContainer = ({ zoom, disabled, ...rest }: FadingTextContainerProps) => {
   const textRef = useRef<HTMLDivElement | null>(null);
 
   const handleOpacity = () => {
     const textElement = textRef.current;
+
     if (!textElement) return;
 
-    textElement.childNodes.forEach(node => {
-      if (node instanceof HTMLElement) {
-        fadeElement(node, { zoom });
+    const childElements = [...textElement.childNodes].filter(node => {
+      return node instanceof HTMLElement;
+    }) as HTMLElement[];
+
+    for (const childElement of childElements) {
+      if (disabled) {
+        childElement.style.opacity = '';
+      } else {
+        fadeElement(childElement, { zoom });
       }
-    });
+    }
   }
 
   useEffect(handleOpacity);
@@ -27,6 +34,7 @@ export const FadingTextContainer = ({ zoom, ...rest }: FadingTextContainerProps)
 }
 
 export interface FadingTextContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+  disabled?: boolean;
   zoom?: number;
   children?: React.ReactNode;
 }
