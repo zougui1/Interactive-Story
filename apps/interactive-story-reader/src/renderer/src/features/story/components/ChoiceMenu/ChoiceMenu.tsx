@@ -57,7 +57,9 @@ export const ChoiceMenu = ({ choices, onChoose }: ChoiceMenuProps) => {
   });
 
   useWindowEvent('keydown', (event) => {
-    if (event.ctrlKey || event.shiftKey || event.altKey) {
+    // doesn't handle the keydown event on repeat
+    // to allow for the native browser scrolling
+    if (event.repeat || event.ctrlKey || event.shiftKey || event.altKey) {
       return;
     }
 
@@ -95,6 +97,7 @@ export const ChoiceMenu = ({ choices, onChoose }: ChoiceMenuProps) => {
           className={item({ focused: focusedChoice.id === choice.id })}
           onMouseEnter={() => setFocusedChoice(choice)}
           onClick={() => onChoose(choice)}
+          data-id="choice"
         >
           {choice.letter}: {choice.text}
         </li>
