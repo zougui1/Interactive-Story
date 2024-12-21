@@ -8,6 +8,7 @@ import { scrollToBottom } from '~/utils';
 import { ChoiceMenu } from '../components/ChoiceMenu';
 import { FadingTextContainer } from '../components/FadingTextContainer';
 import { usePersistedSaves, useStorySave } from '../storySave';
+import { AppMarkdown } from '~/components/AppMarkdown';
 
 export const Story = ({ story }: StoryProps) => {
   const menuRef = useRef<HTMLUListElement | null>(null);
@@ -64,13 +65,14 @@ export const Story = ({ story }: StoryProps) => {
       <FadingTextContainer className="space-y-4">
         {acts.map((prevScene, index) => (
           <Fragment key={index}>
-            <pre>{prevScene.scene.text}</pre>
-            <pre>{prevScene.choice.text}</pre>
+            {/** correctly render new lines */}
+            <AppMarkdown forceNewLines>{prevScene.scene.text}</AppMarkdown>
+            <AppMarkdown forceNewLines>{prevScene.choice.text}</AppMarkdown>
           </Fragment>
         ))}
       </FadingTextContainer>
 
-      <pre>{currentScene.text}</pre>
+      <AppMarkdown forceNewLines>{currentScene.text}</AppMarkdown>
 
       <Separator />
 
