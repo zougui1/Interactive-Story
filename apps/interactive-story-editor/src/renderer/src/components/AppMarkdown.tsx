@@ -17,7 +17,7 @@ const renderRule = (
 
     return (
       <span key={state.key} style={{ color: value }}>
-        {node.target}
+        {[node.target, node.title].filter(Boolean).join(' ')}
       </span>
     );
   }
@@ -25,16 +25,19 @@ const renderRule = (
   return next();
 }
 
-export const AppMarkdown = ({ className, ...rest }: AppMarkdownProps) => {
+export const AppMarkdown = ({ className, forceNewLines, children, ...rest }: AppMarkdownProps) => {
   return (
     <Markdown
       {...rest}
       options={{ renderRule, forceBlock: true }}
       className={cn('overflow-y-auto', className)}
-    />
+    >
+      {forceNewLines ? children.replaceAll('\n', '\n\n') : children}
+    </Markdown>
   );
 }
 
 export interface AppMarkdownProps extends Omit<React.HTMLAttributes<Element>, 'children'> {
   children: string;
+  forceNewLines?: boolean;
 }

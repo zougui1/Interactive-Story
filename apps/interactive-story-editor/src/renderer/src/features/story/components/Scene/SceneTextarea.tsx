@@ -29,8 +29,11 @@ export const SceneTextarea = forwardRef<HTMLTextAreaElement, SceneTextareaProps>
       )}
 
       {showPreview && (
-        <AppMarkdown className="w-full h-full px-3 pt-6 pb-2 bg-background rounded-md border border-input">
-          {String(value).replaceAll('\n', '\n\n')}
+        <AppMarkdown
+          className="w-full h-full px-3 pt-6 pb-2 bg-background rounded-md border border-input"
+          forceNewLines
+        >
+          {String(value)}
         </AppMarkdown>
       )}
     </div>
