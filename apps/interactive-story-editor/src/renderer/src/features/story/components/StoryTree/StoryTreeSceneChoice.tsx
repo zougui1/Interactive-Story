@@ -32,7 +32,7 @@ export const StoryTreeSceneChoice = ({ choice, index }: StoryTreeSceneChoiceProp
         </Tooltip.Trigger>
 
         <Tooltip.Content className="shadow-md shadow-blue-200/20">
-          <Textarea
+          <Scene.Textarea
             value={choice.text}
             onChange={e => story.setChoiceText(choice.id, e.currentTarget.value)}
             readOnly={story.readOnly}

@@ -30,16 +30,16 @@ export const StoryTreeSceneChoice = ({ choice }: StoryTreeSceneChoiceProps) => {
         />
       )}
 
-      <Textarea
+      <Scene.Textarea
         value={choice.text}
         onChange={e => story.setChoiceText(choice.id, e.currentTarget.value)}
         readOnly={story.readOnly}
         placeholder="Choice text"
-        className="h-2/5 resize-none"
+        className="h-2/5"
         autoFocus
       />
 
-      <ArrowDown className="w-6" />
+      <ArrowDown className="w-6 h-6 mb-4" />
 
       <Scene.Textarea
         value={targetScene?.text || ''}
