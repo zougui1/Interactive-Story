@@ -13,7 +13,6 @@ const renderRule = (
       return next();
     }
 
-    console.log(node);
     return (
       <span key={state.key} style={{ color: value }}>
         {node.target}
