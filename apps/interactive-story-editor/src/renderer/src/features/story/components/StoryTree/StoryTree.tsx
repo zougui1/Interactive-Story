@@ -25,9 +25,11 @@ const StoryTreeRoot = () => {
       </Row>
 
       <Row>
-        {story.currentScene.choices?.map((choice, index) => (
-          <StoryTreeSceneChoice key={choice.id} choice={choice} index={index} />
-        ))}
+        {story.currentScene.choices
+          ?.filter(choiceId => story.choices[choiceId])
+          .map((choiceId, index) => (
+            <StoryTreeSceneChoice key={choiceId} choice={story.choices[choiceId]} index={index} />
+          ))}
       </Row>
     </div>
   );

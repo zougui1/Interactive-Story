@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@zougui/interactive-story.story':
-        specifier: ^0.1.3
-        version: 0.1.3
+        specifier: ^0.2.0
+        version: 0.2.0
       nanoid:
         specifier: ^3.3.7
         version: 3.3.7
@@ -385,8 +385,8 @@ packages:
     peerDependencies:
       electron: ^31.2.0
 
-  '@zougui/interactive-story.story@0.1.3':
-    resolution: {integrity: sha512-dAa7QHnlQZ7KqEXhwwJA2TdrMX8PL7V3807KSjUmuWgX3v2RxiOo1hFmHF0KDo4n6WwvhQNnI0l3EqKWfy/NKg==}
+  '@zougui/interactive-story.story@0.2.0':
+    resolution: {integrity: sha512-aPLHMdtX8MSt2bsqJ8zBsb2GWmcxEIYYlFbAGzZwg4Ow5RuJVEPD5rFtKTcPYHpnekFIohP+eM59n5qbMISBdQ==}
 
   ansi-escapes@4.3.2:
     resolution: {integrity: sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ==}
@@ -448,6 +448,7 @@ packages:
 
   boolean@3.2.0:
     resolution: {integrity: sha512-d0II/GO9uf9lfUHH2BQsjxzRJZBdsjgsBiW4BvhWk/3qoKwQFjIDVN19PfX8F2D/r9PCMTtLWjYVCFrpeYUzsw==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
@@ -2019,7 +2020,7 @@ snapshots:
       '@zougui/common.string-utils': 0.2.1
       electron: 31.2.1
 
-  '@zougui/interactive-story.story@0.1.3':
+  '@zougui/interactive-story.story@0.2.0':
     dependencies:
       zod: 3.23.8
 

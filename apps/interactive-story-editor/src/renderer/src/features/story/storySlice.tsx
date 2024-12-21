@@ -101,3 +101,30 @@ export const saveStory = (options?: SaveOptions): AppThunk => {
 export interface SaveOptions {
   overwrite?: boolean;
 }
+
+export const exportHtml = (): AppThunk => {
+  return async (_dispatch, getState) => {
+    const state = getState();
+    const { data: story, filePath } = state.story;
+
+    const htmlFilePath = filePath
+      ? `${filePath.split('.').slice(0, -1).join('.')}.html`
+      : undefined;
+
+    try {
+      await Electron.request(electronApi.fs.export.html, {
+        story,
+        filePath: htmlFilePath,
+      });
+    } catch (error) {
+      console.log(error, fromError(error).toString())
+      toast.error(
+        <ToastMessage
+          label="The file could not be exported as HTML."
+          details={getErrorMessage(error) || fromError(error).message}
+        />
+      );
+      throw error;
+    }
+  };
+};

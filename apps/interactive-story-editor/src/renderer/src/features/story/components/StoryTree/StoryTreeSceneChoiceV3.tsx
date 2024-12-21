@@ -3,14 +3,13 @@ import { ChevronDown, ArrowUpToLine, ArrowDown } from 'lucide-react';
 
 import { ChoiceType, type SceneChoice } from '@zougui/interactive-story.story';
 
-import { Tooltip } from '@renderer/components/Tooltip';
 import { Textarea } from '@renderer/components/Textarea';
 
 import { useStoryTreeContext } from './context';
 import { StoryTreeSceneChoiceMenu } from './StoryTreeSceneChoiceMenu';
 import { Scene } from '../Scene';
 
-export const StoryTreeSceneChoice = ({ choice, index }: StoryTreeSceneChoiceProps) => {
+export const StoryTreeSceneChoice = ({ choice }: StoryTreeSceneChoiceProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const story = useStoryTreeContext();
 

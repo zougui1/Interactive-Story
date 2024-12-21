@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import type { BrowserWindow } from 'electron';
+import { type BrowserWindow } from 'electron';
 import { electronApp, is } from '@electron-toolkit/utils';
 
 import {

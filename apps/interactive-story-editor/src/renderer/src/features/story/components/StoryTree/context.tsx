@@ -5,6 +5,7 @@ import {
   ChoiceType,
   type Story,
   type Scene,
+  type SceneChoice,
   type SceneReference,
 } from '@zougui/interactive-story.story';
 
@@ -13,6 +14,7 @@ export interface StoryTreeState {
   id: string;
   title: string;
   scenes: Record<string, Scene>;
+  choices: Record<string, SceneChoice>;
   sceneReferences: Record<string, SceneReference>;
   sceneIdStack: string[];
   currentScene: Scene;
@@ -40,6 +42,7 @@ export const StoryTreeProvider = ({
   const [title, setTitle] = useState(defaultStory.title);
   const [id] = useState(defaultStory.id);
   const [scenes, setScenes] = useState(defaultStory.scenes);
+  const [choices, setChoices] = useState(defaultStory.choices);
   const [sceneIdStack, setSceneIdStack] = useState(defaultStory.sceneIdStack);
   const [sceneReferences, setSceneReferences] = useState(defaultStory.sceneReferences);
 
@@ -51,10 +54,11 @@ export const StoryTreeProvider = ({
       id,
       title,
       scenes,
+      choices,
       sceneIdStack,
       sceneReferences,
     });
-  }, [id, title, scenes, sceneIdStack, sceneReferences]);
+  }, [id, title, scenes, choices, sceneIdStack, sceneReferences]);
 
   const addChoice = useCallback(() => {
     setScenes((prevScenes) => {
@@ -82,6 +86,20 @@ export const StoryTreeProvider = ({
         };
       });
 
+      const newChoice = {
+        id: nanoid(),
+        type: ChoiceType.Branch,
+        text: '',
+        sceneId: newScene.id,
+      };
+
+      setChoices(prevChoices => {
+        return {
+          ...prevChoices,
+          [newChoice.id]: newChoice,
+        };
+      });
+
       return {
         ...prevScenes,
         [newScene.id]: newScene,
@@ -89,12 +107,7 @@ export const StoryTreeProvider = ({
           ...currentScene,
           choices: [
             ...(currentScene.choices || []),
-            {
-              id: nanoid(),
-              type: ChoiceType.Branch,
-              text: '',
-              sceneId: newScene.id,
-            },
+            newChoice.id,
           ],
         },
       };
@@ -138,7 +151,22 @@ export const StoryTreeProvider = ({
   }, []);
 
   const setChoiceText = useCallback((choiceId: string, text: string) => {
-    setScenes((prevScenes) => {
+    setChoices(prevChoices => {
+      const prevChoice = prevChoices[choiceId];
+
+      if (!prevChoice) {
+        return prevChoices;
+      }
+
+      return {
+        ...prevChoices,
+        [choiceId]: {
+          ...prevChoice,
+          text,
+        },
+      };
+    });
+    /*setScenes((prevScenes) => {
       const [currentSceneId] = sceneIdStack.slice().reverse();
 
       if (!currentSceneId) {
@@ -164,11 +192,32 @@ export const StoryTreeProvider = ({
           }),
         },
       };
-    });
-  }, [sceneIdStack]);
+    });*/
+  }, []);
 
   const setChoiceBranch = useCallback((choiceId: string) => {
-    setScenes((prevScenes) => {
+    const newScene = {
+      id: nanoid(),
+      text: '',
+    };
+
+    setChoices(prevChoices => {
+      const prevChoice = prevChoices[choiceId];
+
+      if (!prevChoice) {
+        return prevChoices;
+      }
+
+      return {
+        ...prevChoices,
+        [choiceId]: {
+          ...prevChoice,
+          type: ChoiceType.Branch,
+          sceneId: newScene.id,
+        },
+      };
+    });
+    /*setScenes((prevScenes) => {
       const [currentSceneId] = sceneIdStack.slice().reverse();
 
       if (!currentSceneId) {
@@ -180,11 +229,6 @@ export const StoryTreeProvider = ({
       if (!currentScene) {
         prevScenes;
       }
-
-      const newScene = {
-        id: nanoid(),
-        text: '',
-      };
 
       return {
         ...prevScenes,
@@ -204,11 +248,51 @@ export const StoryTreeProvider = ({
           }),
         },
       };
-    });
-  }, [sceneIdStack]);
+    });*/
+  }, []);
 
   const setChoiceJump = useCallback((choiceId: string, sceneId: string) => {
-    setScenes((prevScenes) => {
+    setChoices(prevChoices => {
+      const prevChoice = prevChoices[choiceId];
+
+      if (!prevChoice || prevChoice.sceneId === sceneId) {
+        return prevChoices;
+      }
+
+      const newChoices = {
+        ...prevChoices,
+        [choiceId]: {
+          ...prevChoice,
+          type: ChoiceType.Jump,
+          sceneId,
+        },
+      };
+
+      const prevSceneReference = sceneReferences[prevChoice.sceneId];
+      const nextSceneReference = sceneReferences[sceneId];
+
+      const newSceneReferences = {
+        ...sceneReferences,
+        [prevChoice.sceneId]: {
+          count: prevSceneReference ? prevSceneReference.count - 1 : 0,
+        },
+        [sceneId]: {
+          count: nextSceneReference ? nextSceneReference.count + 1 : 0,
+        },
+      };
+      const newScenes = { ...scenes };
+
+      if (newSceneReferences[prevChoice.sceneId].count <= 0) {
+        delete newSceneReferences[prevChoice.sceneId];
+        delete newScenes[prevChoice.sceneId];
+      }
+
+      setSceneReferences(newSceneReferences);
+      setScenes(newScenes);
+
+      return newChoices;
+    });
+    /*setScenes((prevScenes) => {
       const [currentSceneId] = sceneIdStack.slice().reverse();
 
       if (!currentSceneId) {
@@ -268,11 +352,41 @@ export const StoryTreeProvider = ({
       }
 
       return newScenes;
-    });
-  }, [sceneIdStack, sceneReferences]);
+    });*/
+  }, [scenes, sceneReferences]);
 
   const deleteChoice = useCallback((choiceId: string) => {
-    setScenes((prevScenes) => {
+    setChoices(prevChoices => {
+      const prevChoice = prevChoices[choiceId];
+
+      if (!prevChoice) {
+        return prevChoices;
+      }
+
+      const newChoices = { ...prevChoices };
+      delete newChoices[choiceId];
+
+      const sceneReference = sceneReferences[prevChoice.sceneId];
+
+      const newSceneReferences = {
+        ...sceneReferences,
+        [prevChoice.sceneId]: {
+          count: sceneReference ? sceneReference.count - 1 : 0,
+        },
+      };
+      const newScenes = { ...scenes };
+
+      if (newSceneReferences[prevChoice.sceneId]?.count <= 0) {
+        delete newSceneReferences[prevChoice.sceneId];
+        delete newScenes[prevChoice.sceneId];
+      }
+
+      setSceneReferences(newSceneReferences);
+      setScenes(newScenes);
+
+      return newChoices;
+    });
+    /*setScenes((prevScenes) => {
       const [currentSceneId] = sceneIdStack.slice().reverse();
 
       if (!currentSceneId) {
@@ -314,8 +428,8 @@ export const StoryTreeProvider = ({
       }
 
       return newScenes;
-    });
-  }, [sceneIdStack, sceneReferences]);
+    });*/
+  }, [scenes, sceneReferences]);
 
   const state = useMemo(() => {
     const [currentSceneId, parentSceneId] = sceneIdStack.slice().reverse();
@@ -325,6 +439,7 @@ export const StoryTreeProvider = ({
       id,
       title,
       scenes,
+      choices,
       sceneIdStack,
       sceneReferences,
       currentScene: scenes[currentSceneId],
@@ -344,6 +459,7 @@ export const StoryTreeProvider = ({
     id,
     title,
     scenes,
+    choices,
     sceneIdStack,
     sceneReferences,
     addChoice,

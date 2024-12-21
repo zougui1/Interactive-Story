@@ -9,5 +9,4 @@ config({
 
 export const env = {
   electronRendererUrl: envVar.get('ELECTRON_RENDERER_URL').asString(),
-  staticKey: envVar.get('STATIC_KEY').required().asString(),
 };

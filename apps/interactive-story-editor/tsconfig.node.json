@@ -5,6 +5,7 @@
     "composite": true,
     "types": ["electron-vite/node"],
     "noImplicitReturns": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "lib": ["es2023"]
   }
 }

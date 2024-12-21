@@ -26,6 +26,19 @@ export const electronApi = {
 
       response: zod.void(),
     },
+
+    export: {
+      html: {
+        fullPath: '/fs/export/html',
+
+        params: zod.object({
+          story: storySchema,
+          filePath: zod.string().optional(),
+        }),
+
+        response: zod.void(),
+      },
+    },
   },
 
   window: {

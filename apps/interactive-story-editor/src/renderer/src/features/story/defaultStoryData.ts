@@ -15,6 +15,8 @@ export const createDefaultStoryData = () => {
       },
     },
 
+    choices: {},
+
     sceneReferences: {
       [rootId]: { count: 1 },
     },

@@ -5,7 +5,7 @@ import { Electron } from '@zougui/interactive-story.electron-api';
 import { Menu } from '@renderer/components/Menu';
 import { useAppDispatch, useAppSelector } from '@renderer/store';
 
-import { openStory, saveStory, newStory } from '../storySlice';
+import { openStory, saveStory, newStory, exportHtml } from '../storySlice';
 
 enum ShortcutMap {
   NewStory = 'ctrl+n',
@@ -28,6 +28,10 @@ export const FileMenu = () => {
 
   const handleSaveAs = () => {
     dispatch(saveStory());
+  };
+
+  const handleExportHtml = () => {
+    dispatch(exportHtml());
   };
 
   const handleOpen = async () => {
@@ -79,6 +83,13 @@ export const FileMenu = () => {
             shortcut={ShortcutMap.SaveAs}
           >
             Save As
+          </Menu.Item>
+
+          <Menu.Item
+            disabled={!Electron.isAvailable || !story}
+            onClick={handleExportHtml}
+          >
+            Export As HTML
           </Menu.Item>
         </Menu.Group>
       </Menu.Content>

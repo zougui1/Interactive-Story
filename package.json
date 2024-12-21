@@ -1,0 +1,14 @@
+{
+  "name": "@zougui/interactive-story",
+  "version": "0.1.3",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:scripts": "cd ./scripts && npm run build",
+    "build": "npm run build:scripts && node ./scripts/lib/index.js build"
+  },
+  "keywords": [],
+  "author": "Zougui",
+  "license": "ISC"
+}

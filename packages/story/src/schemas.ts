@@ -14,7 +14,7 @@ export type SceneChoice = zod.infer<typeof sceneChoiceSchema>;
 export const sceneSchema = zod.object({
   id: zod.string(),
   text: zod.string(),
-  choices: zod.array(sceneChoiceSchema).optional(),
+  choices: zod.array(zod.string()).optional(),
 });
 
 export type Scene = zod.infer<typeof sceneSchema>;
@@ -29,6 +29,7 @@ export const storySchema = zod.object({
   id: zod.string(),
   title: zod.string().min(1),
   scenes: zod.record(sceneSchema),
+  choices: zod.record(sceneChoiceSchema),
   sceneIdStack: zod.array(zod.string()).min(1),
   sceneReferences: zod.record(sceneReferenceSchema),
 });

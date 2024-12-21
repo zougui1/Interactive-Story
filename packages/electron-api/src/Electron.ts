@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import type zod from 'zod';
 
 import type { ElectronRequest, RouteDefinition } from '@zougui/interactive-story.electron-utils';
@@ -10,11 +9,13 @@ class ElectronClass {
     return Boolean(window.electron)
   }
 
-  request = <TParams extends zod.ZodType, TResponse extends zod.ZodType>(
+  request = async <TParams extends zod.ZodType, TResponse extends zod.ZodType>(
     definition: RouteDefinition<TParams, TResponse>,
     data: zod.infer<TParams>,
   ): Promise<ElectronResponse<zod.infer<TResponse>>> => {
-    return new Promise((resolve, reject) => {
+    const { nanoid } = await import('nanoid');
+
+    return new Promise(async (resolve, reject) => {
       if (!this.isAvailable) {
         return reject(new Error('No electron process'));
       }

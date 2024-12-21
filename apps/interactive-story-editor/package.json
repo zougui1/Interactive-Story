@@ -1,9 +1,10 @@
 {
   "name": "interactive-story-editor",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Interactive Story Editor",
   "main": "./out/main/index.js",
   "author": "Zougui",
+  "homepage": "https://github.com/zougui1/Interactive-Story",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -31,13 +32,15 @@
     "@radix-ui/react-tabs": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@reduxjs/toolkit": "^2.2.6",
-    "@zougui/interactive-story.electron-api": "^0.2.1",
-    "@zougui/interactive-story.electron-utils": "^0.1.5",
-    "@zougui/interactive-story.story": "^0.1.3",
-    "@zougui/interactive-story.zis": "^0.1.2",
+    "@zougui/interactive-story.electron-api": "^0.5.0",
+    "@zougui/interactive-story.electron-utils": "^0.1.7",
+    "@zougui/interactive-story.story": "^0.2.0",
+    "@zougui/interactive-story.zis": "^0.3.0",
+    "asar": "^3.2.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "env-var": "^7.5.0",
+    "fs-extra": "^11.2.0",
     "lucide-react": "^0.407.0",
     "nanoid": "^5.0.7",
     "radash": "^12.1.0",
@@ -47,6 +50,7 @@
     "tailwind-merge": "^2.4.0",
     "tailwind-variants": "^0.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "vite": "^5.4.11",
     "zod-validation-error": "^3.3.0"
   },
   "devDependencies": {
@@ -60,6 +64,7 @@
     "electron": "^31.0.2",
     "electron-builder": "^24.13.3",
     "electron-vite": "^2.3.0",
+    "esbuild": "^0.24.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",
@@ -69,7 +74,6 @@
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.4",
     "type-fest": "^4.21.0",
-    "typescript": "^5.5.2",
-    "vite": "^5.3.1"
+    "typescript": "^5.5.2"
   }
 }
