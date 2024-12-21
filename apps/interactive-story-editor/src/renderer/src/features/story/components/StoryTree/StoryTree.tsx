@@ -2,7 +2,7 @@ import { Input } from '@renderer/components/Input';
 
 import { StoryTreeProvider, useStoryTreeContext, type StoryTreeProviderProps } from './context';
 import { StoryTreeCurrentScene } from './StoryTreeCurrentScene';
-import { StoryTreeSceneChoice } from './StoryTreeSceneChoiceV3';
+import { StoryTreeSceneChoice } from './StoryTreeSceneChoice';
 import { Row } from '../Row';
 
 const StoryTreeRoot = () => {

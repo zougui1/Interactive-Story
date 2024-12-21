@@ -1,45 +1,25 @@
 import { useState } from 'react';
-import { ChevronDown, ArrowUpToLine } from 'lucide-react';
+import { ChevronDown, ArrowUpToLine, ArrowDown } from 'lucide-react';
 
 import { ChoiceType, type SceneChoice } from '@zougui/interactive-story.story';
-
-import { Tooltip } from '@renderer/components/Tooltip';
-import { Textarea } from '@renderer/components/Textarea';
 
 import { useStoryTreeContext } from './context';
 import { StoryTreeSceneChoiceMenu } from './StoryTreeSceneChoiceMenu';
 import { Scene } from '../Scene';
 
-export const StoryTreeSceneChoice = ({ choice, index }: StoryTreeSceneChoiceProps) => {
+export const StoryTreeSceneChoice = ({ choice }: StoryTreeSceneChoiceProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const story = useStoryTreeContext();
 
   const targetScene = story.scenes[choice.sceneId];
 
   return (
-    <Scene.Root menuOpen={menuOpen} className="flex flex-col gap-2">
+    <Scene.Root menuOpen={menuOpen} className="flex flex-col items-center gap-2 h-[30rem]">
       {choice.type === ChoiceType.Jump && (
         <Scene.Badge position="topLeft">
           <ArrowUpToLine className="w-4" />
         </Scene.Badge>
       )}
-
-      <Tooltip.Root delayDuration={100}>
-        <Tooltip.Trigger asChild>
-          <Scene.Badge position="topMiddle">
-            <span>{index + 1}</span>
-          </Scene.Badge>
-        </Tooltip.Trigger>
-
-        <Tooltip.Content className="shadow-md shadow-blue-200/20">
-          <Scene.Textarea
-            value={choice.text}
-            onChange={e => story.setChoiceText(choice.id, e.currentTarget.value)}
-            readOnly={story.readOnly}
-            placeholder="Choice text"
-          />
-        </Tooltip.Content>
-      </Tooltip.Root>
 
       {!story.readOnly && (
         <StoryTreeSceneChoiceMenu
@@ -49,8 +29,20 @@ export const StoryTreeSceneChoice = ({ choice, index }: StoryTreeSceneChoiceProp
       )}
 
       <Scene.Textarea
+        value={choice.text}
+        onChange={e => story.setChoiceText(choice.id, e.currentTarget.value)}
+        readOnly={story.readOnly}
+        placeholder="Choice text"
+        className="h-2/5"
+        autoFocus
+      />
+
+      <ArrowDown className="w-6 h-6 mb-4" />
+
+      <Scene.Textarea
         value={targetScene?.text || ''}
         onChange={e => story.setSceneText(choice.sceneId, e.currentTarget.value)}
+        className="h-3/5"
       />
 
       <Scene.Button
