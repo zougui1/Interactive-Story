@@ -1,5 +1,7 @@
 import Markdown, { RuleType, type MarkdownToJSX } from 'markdown-to-jsx';
 
+import { cn } from '@renderer/utils';
+
 const renderRule = (
   next: () => React.ReactNode,
   node: MarkdownToJSX.ParserResult,
@@ -23,11 +25,12 @@ const renderRule = (
   return next();
 }
 
-export const AppMarkdown = (props: AppMarkdownProps) => {
+export const AppMarkdown = ({ className, ...rest }: AppMarkdownProps) => {
   return (
     <Markdown
-      {...props}
+      {...rest}
       options={{ renderRule, forceBlock: true }}
+      className={cn('overflow-y-auto', className)}
     />
   );
 }
