@@ -5,7 +5,7 @@ import { cn } from '~/utils';
 const renderRule = (
   next: () => React.ReactNode,
   node: MarkdownToJSX.ParserResult,
-  renderChildren: MarkdownToJSX.RuleOutput,
+  _renderChildren: MarkdownToJSX.RuleOutput,
   state: MarkdownToJSX.State,
 ): React.ReactNode => {
   if (node.type === RuleType.image && node.alt) {
