@@ -3,13 +3,14 @@ import { toast } from 'react-toastify';
 import { fromError } from 'zod-validation-error';
 
 import { Electron, electronApi } from '@zougui/interactive-story.electron-api';
-import type { Story } from '@zougui/interactive-story.story';
+import type { Stat, Story } from '@zougui/interactive-story.story';
 
 import { createAppSlice, type AppThunk } from '@renderer/store';
 
 import { createDefaultStoryData } from './defaultStoryData';
 import { getErrorMessage } from '@renderer/utils';
 import { ToastMessage } from '@renderer/components/ToastMessage';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 export interface StorySlice {
   syntheticKey: string;
@@ -21,6 +22,9 @@ const initialState: StorySlice = {
   syntheticKey: nanoid(),
   data: createDefaultStoryData(),
 };
+
+// TODO replace redux with xstate
+//! replace redux with xstate
 
 export const storySlice = createAppSlice({
   name: 'story',
@@ -70,10 +74,15 @@ export const storySlice = createAppSlice({
         },
       }
     ),
+
+    updateStat: (state, action: PayloadAction<Stat>) => {
+      state.data.stats[action.payload.id] = action.payload;
+      state.data.statReferences[action.payload.id] ??= { count: 0 };
+    },
   }),
 });
 
-export const { updateStory, openStory, newStory } = storySlice.actions;
+export const { updateStory, openStory, newStory, updateStat } = storySlice.actions;
 
 export const saveStory = (options?: SaveOptions): AppThunk => {
   return async (_dispatch, getState) => {

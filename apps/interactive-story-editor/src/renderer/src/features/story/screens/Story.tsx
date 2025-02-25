@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '@renderer/store';
 import { StoryTree } from '../components/StoryTree';
 import { MenuBar } from '../components/MenuBar';
 import { updateStory } from '../storySlice';
+import { StatsContainer } from '../components/StatsContainer';
 
 export const Story = () => {
   const dispatch = useAppDispatch();
@@ -12,6 +13,8 @@ export const Story = () => {
   return (
     <>
       <MenuBar />
+
+      <StatsContainer />
 
       <div className="flex justify-center container mx-auto pt-8">
         <StoryTree

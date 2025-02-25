@@ -25,6 +25,22 @@ export const sceneReferenceSchema = zod.object({
 
 export type SceneReference = zod.infer<typeof sceneReferenceSchema>;
 
+export const statSchema = zod.object({
+  id: zod.string(),
+  name: zod.string().trim(),
+  color: zod.string().trim(),
+  startValue: zod.coerce.number().min(0),
+  value: zod.coerce.number().min(0),
+});
+
+export type Stat = zod.infer<typeof statSchema>;
+
+export const statReferenceSchema = zod.object({
+  count: zod.number(),
+});
+
+export type StatReference = zod.infer<typeof statReferenceSchema>;
+
 export const storySchema = zod.object({
   id: zod.string(),
   title: zod.string().min(1),
@@ -32,6 +48,8 @@ export const storySchema = zod.object({
   choices: zod.record(sceneChoiceSchema),
   sceneIdStack: zod.array(zod.string()).min(1),
   sceneReferences: zod.record(sceneReferenceSchema),
+  stats: zod.record(statSchema),
+  statReferences: zod.record(statReferenceSchema),
 });
 
 export type Story = zod.infer<typeof storySchema>;

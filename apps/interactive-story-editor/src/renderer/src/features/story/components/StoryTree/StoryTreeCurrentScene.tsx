@@ -1,6 +1,6 @@
 import { ChevronUp, Plus, Copy } from 'lucide-react';
 
-import { copyText } from '@renderer/utils';
+import { cn, copyText } from '@renderer/utils';
 
 import { useStoryTreeContext } from './context';
 import { Scene } from '../Scene';
@@ -9,7 +9,7 @@ export const StoryTreeCurrentScene = () => {
   const story = useStoryTreeContext();
 
   return (
-    <Scene.Root>
+    <Scene.Root className={cn(story.parentScene && 'pt-12')}>
       {story.parentScene && (
         <Scene.Button position="topMiddle" onClick={story.goToParentScene}>
           <ChevronUp className="w-6" />

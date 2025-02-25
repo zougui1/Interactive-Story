@@ -3,7 +3,8 @@ import { Command } from 'commander';
 const program = new Command();
 
 program
-  .command('build', 'Build the app')
+  .command('build')
+  .description('Build the app')
   .action(async () => {
     const { build } = await import('./build');
     await build();

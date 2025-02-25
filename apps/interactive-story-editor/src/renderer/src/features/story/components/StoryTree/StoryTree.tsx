@@ -9,7 +9,7 @@ const StoryTreeRoot = () => {
   const story = useStoryTreeContext();
 
   return (
-    <div className="flex flex-col items-center space-y-24">
+    <div className="flex flex-col items-center space-y-16">
       <Row>
         <Input
           label="Title"

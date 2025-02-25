@@ -21,6 +21,9 @@ export const createDefaultStoryData = () => {
       [rootId]: { count: 1 },
     },
 
+    stats: {},
+    statReferences: {},
+
     sceneIdStack: [rootId],
   } satisfies Story;
 }

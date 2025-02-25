@@ -45,6 +45,8 @@ export const StoryTreeProvider = ({
   const [choices, setChoices] = useState(defaultStory.choices);
   const [sceneIdStack, setSceneIdStack] = useState(defaultStory.sceneIdStack);
   const [sceneReferences, setSceneReferences] = useState(defaultStory.sceneReferences);
+  const [stats, setStats] = useState(defaultStory.stats);
+  const [statReferences, setStatReferences] = useState(defaultStory.statReferences);
 
   const changeHandlerRef = useRef(onChange);
   changeHandlerRef.current = onChange;
@@ -57,8 +59,10 @@ export const StoryTreeProvider = ({
       choices,
       sceneIdStack,
       sceneReferences,
+      stats,
+      statReferences,
     });
-  }, [id, title, scenes, choices, sceneIdStack, sceneReferences]);
+  }, [id, title, scenes, choices, sceneIdStack, sceneReferences, stats, statReferences]);
 
   const addChoice = useCallback(() => {
     setScenes((prevScenes) => {
