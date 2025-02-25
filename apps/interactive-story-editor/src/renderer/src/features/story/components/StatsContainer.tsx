@@ -5,8 +5,9 @@ import { Input } from '@renderer/components/Input';
 import { Button } from '@zougui/react.ui';
 import { Plus } from 'lucide-react';
 import { StatFormDialog } from './stat/StatFormDialog';
-import { useAppSelector } from '@renderer/store';
 import { isEqual } from 'radash';
+import { useSelector } from '@xstate/store/react';
+import { storyStore } from '../story.store';
 
 const StatInput = ({ stat, onChange }: StatInputProps) => {
   const handleChange = (field: keyof Stat) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +44,7 @@ export interface StatInputProps {
 }
 
 export const StatLabel = ({ id }: StatLabelProps) => {
-  const stat = useAppSelector(state => state.story.data.stats[id]);
+  const stat = useSelector(storyStore, state => state.context.data.stats[id]);
 
   if (!stat) {
     return null;
@@ -85,7 +86,7 @@ const getDefaultStats = (): Record<string, Stat> => {
 }
 
 export const StatsContainer = () => {
-  const statIds = useAppSelector(state => Object.keys(state.story.data.stats ?? {}), isEqual);
+  const statIds = useSelector(storyStore, state => Object.keys(state.context.data.stats ?? {}), isEqual);
   console.log('statIds:', statIds)
 
   return (

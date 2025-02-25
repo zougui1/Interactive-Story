@@ -3,9 +3,9 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { Electron } from '@zougui/interactive-story.electron-api';
 
 import { Menu } from '@renderer/components/Menu';
-import { useAppDispatch, useAppSelector } from '@renderer/store';
 
-import { openStory, saveStory, newStory, exportHtml } from '../storySlice';
+import { useSelector } from '@xstate/store/react';
+import { storyStore } from '../story.store';
 
 enum ShortcutMap {
   NewStory = 'ctrl+n',
@@ -15,27 +15,26 @@ enum ShortcutMap {
 }
 
 export const FileMenu = () => {
-  const dispatch = useAppDispatch();
-  const story = useAppSelector((state) => state.story.data);
+  const story = useSelector(storyStore, (state) => state.context.data);
 
   const handleNew = () => {
-    dispatch(newStory());
+    storyStore.trigger.newStory();
   };
 
   const handleSave = () => {
-    dispatch(saveStory({ overwrite: true }));
+    storyStore.trigger.saveStory({ overwrite: true });
   };
 
   const handleSaveAs = () => {
-    dispatch(saveStory());
+    storyStore.trigger.saveStory({});
   };
 
   const handleExportHtml = () => {
-    dispatch(exportHtml());
+    storyStore.trigger.exportHtml();
   };
 
   const handleOpen = async () => {
-    dispatch(openStory());
+    storyStore.trigger.openStory();
   };
 
   useHotkeys(ShortcutMap.NewStory, handleNew);

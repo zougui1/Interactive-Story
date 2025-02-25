@@ -1,14 +1,13 @@
-import { useAppDispatch, useAppSelector } from '@renderer/store';
+import { useSelector } from '@xstate/store/react';
 
 import { StoryTree } from '../components/StoryTree';
 import { MenuBar } from '../components/MenuBar';
-import { updateStory } from '../storySlice';
 import { StatsContainer } from '../components/StatsContainer';
+import { storyStore } from '../story.store';
 
 export const Story = () => {
-  const dispatch = useAppDispatch();
-  const syntheticKey = useAppSelector(state => state.story.syntheticKey);
-  const story = useAppSelector(state => state.story.data);
+  const syntheticKey = useSelector(storyStore, state => state.context.syntheticKey);
+  const story = useSelector(storyStore, state => state.context.data);
 
   return (
     <>
@@ -19,7 +18,7 @@ export const Story = () => {
       <div className="flex justify-center container mx-auto pt-8">
         <StoryTree
           key={syntheticKey}
-          onChange={story => dispatch(updateStory(story))}
+          onChange={story => storyStore.trigger.updateStory({ story })}
           defaultStory={story}
         />
       </div>

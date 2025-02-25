@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { nanoid } from 'nanoid';
+import { useSelector } from '@xstate/store/react';
 
 import { Form } from '@zougui/react.ui';
 import { statSchema } from '@zougui/interactive-story.story';
@@ -6,14 +8,12 @@ import { statSchema } from '@zougui/interactive-story.story';
 import { Dialog } from '@renderer/components/Dialog';
 import { Button } from '@renderer/components/Button';
 import { useAppForm } from '@renderer/hooks';
-import { useAppDispatch, useAppSelector } from '@renderer/store';
-import { updateStat } from '../../storySlice';
-import { useState } from 'react';
+
+import { storyStore } from '../../story.store';
 
 export const StatFormDialog = ({ defaultStatId, children }: StatFormDialogProps) => {
   const [open, setOpen] = useState(false);
-  const defaultStat = useAppSelector(state => defaultStatId ? state.story.data.stats[defaultStatId] : undefined);
-  const dispatch = useAppDispatch();
+  const defaultStat = useSelector(storyStore, state => defaultStatId ? state.context.data.stats[defaultStatId] : undefined);
 
   const form = useAppForm({
     schema: statSchema.pick({ name: true, color: true, startValue: true }),
@@ -25,11 +25,13 @@ export const StatFormDialog = ({ defaultStatId, children }: StatFormDialogProps)
   });
 
   const handleSubmit = form.handleSubmit(data => {
-    dispatch(updateStat({
-      ...data,
-      id: defaultStat?.id ?? nanoid(),
-      value: data.startValue,
-    }));
+    storyStore.trigger.updateStat({
+      stat: {
+        ...data,
+        id: defaultStat?.id ?? nanoid(),
+        value: data.startValue,
+      },
+    });
     setOpen(false);
     form.reset();
   });
