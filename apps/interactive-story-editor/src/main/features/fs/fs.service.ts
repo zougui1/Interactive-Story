@@ -45,6 +45,8 @@ export const saveFile = async (options: SaveFileOptions) => {
     fileMetadata: zisFile,
   });
 
+  console.log('saveFile: filePath', filePath)
+
   if (!filePath) {
     return;
   }

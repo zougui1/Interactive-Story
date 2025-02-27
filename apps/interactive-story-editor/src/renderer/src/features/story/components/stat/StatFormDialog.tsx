@@ -2,11 +2,9 @@ import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import { useSelector } from '@xstate/store/react';
 
-import { Form } from '@zougui/react.ui';
+import { Form, Dialog, Button, Checkbox } from '@zougui/react.ui';
 import { statSchema } from '@zougui/interactive-story.story';
 
-import { Dialog } from '@renderer/components/Dialog';
-import { Button } from '@renderer/components/Button';
 import { useAppForm } from '@renderer/hooks';
 
 import { storyStore } from '../../story.store';
@@ -16,11 +14,12 @@ export const StatFormDialog = ({ defaultStatId, children }: StatFormDialogProps)
   const defaultStat = useSelector(storyStore, state => defaultStatId ? state.context.data.stats[defaultStatId] : undefined);
 
   const form = useAppForm({
-    schema: statSchema.pick({ name: true, color: true, startValue: true }),
+    schema: statSchema.pick({ name: true, color: true, startValue: true, hidden: true }),
     defaultValues: {
       name: defaultStat?.name ?? '',
       color: defaultStat?.color ?? '#ffffff',
       startValue: defaultStat?.startValue ?? 0,
+      hidden: defaultStat?.hidden ?? false,
     },
   });
 
@@ -67,6 +66,25 @@ export const StatFormDialog = ({ defaultStatId, children }: StatFormDialogProps)
                 control={form.control}
                 name="startValue"
                 label="Start value"
+              />
+              <Form.Field
+                control={form.control}
+                name="hidden"
+                render={({ field }) => (
+                  <Form.Item className="flex items-center gap-2">
+                    <Form.Label>Hide</Form.Label>
+
+                    <Form.Control>
+                      <Checkbox
+                        {...field}
+                        className="!mt-0 border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                        checked={field.value}
+                        value={undefined}
+                        onCheckedChange={field.onChange as any}
+                      />
+                    </Form.Control>
+                  </Form.Item>
+                )}
               />
             </Dialog.Body>
 

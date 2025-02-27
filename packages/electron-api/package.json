@@ -1,6 +1,6 @@
 {
   "name": "@zougui/interactive-story.electron-api",
-  "version": "0.7.0",
+  "version": "0.8.3",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -16,7 +16,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@zougui/interactive-story.story": "^0.4.0",
+    "@zougui/interactive-story.story": "^0.5.3",
     "nanoid": "^3.3.7",
     "zod": "^3.23.8"
   },

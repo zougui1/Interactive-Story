@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { produce } from 'immer';
 
 import { Electron, electronApi } from '@zougui/interactive-story.electron-api';
-import { Stat, type Story } from '@zougui/interactive-story.story';
+import { SceneChoice, SceneChoiceTarget, Stat, type Story } from '@zougui/interactive-story.story';
 
 import { createDefaultStoryData } from './defaultStoryData';
 import { toast } from 'react-toastify';
@@ -29,15 +29,11 @@ export const storyStore = createStore({
   context: getContext(),
 
   on: {
-    newStory: (context, event, enq) => {
-      enq.effect(async () => {
-        await Electron.request(electronApi.window.title.reset, {});
-      });
-
+    newStory: () => {
       return getContext();
     },
 
-    setStory: (context, { data, filePath }: { data: Story, filePath?: string }) => {
+    setStory: (_context, { data, filePath }: { data: Story, filePath?: string }) => {
       return {
         syntheticKey: nanoid(),
         data,
@@ -45,8 +41,8 @@ export const storyStore = createStore({
       };
     },
 
-    openStory: (context, event, enq) => {
-      enq.effect(async () => {
+    openStory: (context, _event, enqueue) => {
+      enqueue.effect(async () => {
         try {
           const { data } = await Electron.request(electronApi.fs.openFile, {});
 
@@ -65,19 +61,15 @@ export const storyStore = createStore({
       return context;
     },
 
-    updateStory: (context, { story }: { story: Story }, enq) => {
-      enq.effect(async () => {
-        await Electron.request(electronApi.window.title.set, { title: story.title });
-      });
-
+    updateStory: (context, { story }: { story: Story }) => {
       return {
         ...context,
-        story,
+        data: story,
       };
     },
 
-    saveStory: (context, event: { overwrite?: boolean }, enq) => {
-      enq.effect(async () => {
+    saveStory: (context, event: { overwrite?: boolean }, enqueue) => {
+      enqueue.effect(async () => {
         try {
           await Electron.request(electronApi.fs.save, {
             story: context.data,
@@ -98,8 +90,8 @@ export const storyStore = createStore({
       return context;
     },
 
-    exportHtml: (context, event, enq) => {
-      enq.effect(async () => {
+    exportHtml: (context, _event, enqueue) => {
+      enqueue.effect(async () => {
         const htmlFilePath = context.filePath
           ? `${context.filePath.split('.').slice(0, -1).join('.')}.html`
           : undefined;
@@ -130,5 +122,61 @@ export const storyStore = createStore({
         draft.data.statReferences[event.stat.id] ??= { count: 0 };
       });
     },
+
+    updateChoiceStatCheck: (context, event: NonNullable<SceneChoice['check']> & { choiceId: string }) => {
+      const { choiceId, failEffect, stats } = event;
+
+      return produce(context, draft => {
+        const choice = draft.data.choices[choiceId];
+
+        choice.check = {
+          stats,
+          failEffect,
+        };
+
+        for (const id of Object.keys(stats)) {
+          const statReference = draft.data.statReferences[id];
+
+          // TODO increment the count only if the stat was not checked before
+          if (statReference) {
+            statReference.count++;
+          }
+        }
+      });
+    },
+
+    removeChoiceStatCheck: (context, event: { choiceId: string }) => {
+      const { choiceId } = event;
+
+      return produce(context, draft => {
+        const choice = draft.data.choices[choiceId];
+
+        choice.check = undefined
+        // TODO decrement the count for previously referenced stats
+      });
+    },
+
+    updateChoiceTargetStatIncrements: (context, event: { choiceId: string; targetId: string; statIncrements: SceneChoiceTarget['statIncrements']; }) => {
+      const { statIncrements } = event;
+
+      return produce(context, draft => {
+        for (const id of Object.keys(statIncrements ?? {})) {
+          const statReference = draft.data.statReferences[id];
+
+          // TODO increment the count only if the stat was not incremented before
+          if (statReference) {
+            statReference.count++;
+          }
+        }
+      });
+    },
   },
+});
+
+storyStore.select(state => state.data.title).subscribe(async title => {
+  if (title.trim()) {
+    await Electron.request(electronApi.window.title.set, { title });
+  } else {
+    await Electron.request(electronApi.window.title.reset, {});
+  }
 });

@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useRef } from 'react';
+import { useSelector } from '@xstate/store/react';
 
 import type { Story as StoryData, SceneChoice } from '@zougui/interactive-story.story';
 
@@ -7,47 +8,74 @@ import { scrollToBottom } from '~/utils';
 
 import { ChoiceMenu } from '../components/ChoiceMenu';
 import { FadingTextContainer } from '../components/FadingTextContainer';
-import { usePersistedSaves, useStorySave } from '../storySave';
+import { storySaveStore } from '../storySave';
 import { AppMarkdown } from '~/components/AppMarkdown';
+import { Progress } from '~/components/Progress';
+import { Button } from '~/components/Button';
 
 export const Story = ({ story }: StoryProps) => {
   const menuRef = useRef<HTMLUListElement | null>(null);
-  const currentStorySave = useStorySave();
-  const [, setPersistedSaves] = usePersistedSaves();
+  const currentStorySave = useSelector(storySaveStore, state => state.context);
 
-  const acts = currentStorySave.choiceIds.map((choiceId, index) => {
-    const prevChoiceId = index > 0 ? currentStorySave.choiceIds[index - 1] : undefined;
-    const prevChoice = prevChoiceId ? story.choices[prevChoiceId] : undefined;
+  useEffect(() => {
+    storySaveStore.trigger.init({ story });
+  }, [story]);
+
+  const acts = currentStorySave.acts.map(({ choiceId, targetId }) => {
     const choice = story.choices[choiceId];
-    const prevSceneId = prevChoice?.sceneId ?? story.scenes.root.id;
-    const prevScene = story.scenes[prevSceneId];
+    const target = choice.targets[targetId as 'success'];
+    const scene = story.scenes[target.sceneId];
 
     return {
-      scene: prevScene,
+      scene,
       choice,
     };
   });
 
-  const lastAct = acts[acts.length - 1];
+  const lastAct = acts.pop();
   const currentScene = lastAct
-    ? story.scenes[lastAct.choice.sceneId]
+    ? story.scenes[lastAct.scene.id]
     : story.scenes.root;
 
-  const handleChoose = (choice: SceneChoice) => {
-    currentStorySave.addChoiceId(choice.id);
-
-    setPersistedSaves(prevPersistedSaves => {
-      const prevChoiceIds = prevPersistedSaves?.[currentStorySave.id]?.choiceIds ?? [];
-
-      return {
-        ...prevPersistedSaves,
-        [currentStorySave.id]: {
-          id: currentStorySave.id,
-          date: new Date(),
-          choiceIds: [...prevChoiceIds, choice.id],
-        },
-      };
+  const checkStats = (statCheck: NonNullable<SceneChoice['check']>['stats']): boolean => {
+    return Object.entries(statCheck).every(([statId, value]) => {
+      return currentStorySave.stats[statId] && currentStorySave.stats[statId].value >= value;
     });
+  }
+
+  const handleChoose = (choice: SceneChoice) => {
+    if (!choice.check) {
+      storySaveStore.trigger.addAct({
+        choiceId: choice.id,
+        targetId: choice.targets.success.id,
+      });
+
+      if (choice.targets.success.statIncrements) {
+        storySaveStore.trigger.incrementStats({ stats: choice.targets.success.statIncrements });
+      }
+
+      return;
+    }
+
+    if (!choice.targets.fail && choice.check.failEffect === 'branch') {
+      console.log(`Missing fail scene outcome for choice: ${choice.id}`);
+      return;
+    }
+
+    const target = checkStats(choice.check.stats) ? choice.targets.success : choice.targets.fail;
+
+    if (!target) {
+      return;
+    }
+
+    storySaveStore.trigger.addAct({
+      choiceId: choice.id,
+      targetId: target.id,
+    });
+
+    if (target.statIncrements) {
+      storySaveStore.trigger.incrementStats({ stats: target.statIncrements });
+    }
   }
 
   useEffect(scrollToBottom, [acts]);
@@ -57,33 +85,65 @@ export const Story = ({ story }: StoryProps) => {
   }, [acts]);
 
   return (
-    <div className="w-full flex flex-col space-y-12 pb-12 text-white">
-      <h1 className="text-5xl font-bold text-center">
+    <div className="container w-screen box-border pl-8 md:max-3xl:pl-44 3xl:mx-auto">
+      <h1 className="text-5xl font-bold text-center mb-8">
         {story.title}
       </h1>
 
-      <FadingTextContainer className="space-y-4">
-        {acts.map((prevScene, index) => (
-          <Fragment key={index}>
-            {/** correctly render new lines */}
-            <AppMarkdown forceNewLines>{prevScene.scene.text}</AppMarkdown>
-            <AppMarkdown forceNewLines>{prevScene.choice.text}</AppMarkdown>
-          </Fragment>
+      <div className="fixed -translate-x-[max(100%_+_1rem)] top-1/2 -translate-y-1/2 w-40 ml-2 flex flex-col gap-4 max-md:hidden">
+        {Object.values(currentStorySave.stats).filter(stat => !story.stats[stat.id]?.hidden).map(stat => (
+          <div key={stat.id} className="flex flex-col gap-2">
+            <div className="flex justify-center gap-2" style={{ color: stat.color }}>
+              <span>
+                {stat.name}
+              </span>
+
+              <span>{stat.value}</span>
+            </div>
+
+            <Progress
+              key={stat.id}
+              value={stat.value}
+              className="w-36 bg-gray-500"
+              color={stat.color}
+            />
+          </div>
         ))}
-      </FadingTextContainer>
+      </div>
 
-      <AppMarkdown forceNewLines>{currentScene.text}</AppMarkdown>
+      <div className="flex flex-col space-y-12 pb-4 md:pb-12 text-white">
+        <FadingTextContainer className="space-y-4">
+          {lastAct && story.scenes.root && (
+            <AppMarkdown forceNewLines>{story.scenes.root.text}</AppMarkdown>
+          )}
 
-      <Separator />
+          {acts.map((prevScene, index) => (
+            <Fragment key={index}>
+              <AppMarkdown forceNewLines>{`\\> ${prevScene.choice.text}`}</AppMarkdown>
+              <AppMarkdown forceNewLines>{prevScene.scene.text}</AppMarkdown>
+            </Fragment>
+          ))}
 
-      {currentScene.choices && (
-        <ChoiceMenu
-          key={currentScene.id}
-          ref={menuRef}
-          choices={currentScene.choices.map(choiceId => story.choices[choiceId]).filter(Boolean)}
-          onChoose={handleChoose}
-        />
-      )}
+          {lastAct && (
+            <>
+              <Separator />
+              <AppMarkdown forceNewLines>{`\\> ${lastAct.choice.text}`}</AppMarkdown>
+            </>
+          )}
+
+          <AppMarkdown forceNewLines>{currentScene.text}</AppMarkdown>
+        </FadingTextContainer>
+
+        {currentScene.choices && (
+          <ChoiceMenu
+            key={currentScene.id}
+            ref={menuRef}
+            story={story}
+            choices={currentScene.choices.map(choiceId => story.choices[choiceId]).filter(Boolean)}
+            onChoose={handleChoose}
+          />
+        )}
+      </div>
     </div>
   );
 }

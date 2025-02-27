@@ -6,7 +6,7 @@ import { SceneButton } from './SceneButton';
 import { Eye } from 'lucide-react';
 import { AppMarkdown } from '@renderer/components/AppMarkdown';
 
-export const SceneTextarea = forwardRef<HTMLTextAreaElement, SceneTextareaProps>(({ className, value, ...rest }, ref) => {
+export const SceneTextarea = forwardRef<HTMLTextAreaElement, SceneTextareaProps>(({ className, value, children, ...rest }, ref) => {
   const [showPreview, setShowPreview] = useState(false);
 
   return (
@@ -17,6 +17,8 @@ export const SceneTextarea = forwardRef<HTMLTextAreaElement, SceneTextareaProps>
       >
         <Eye className="w-6 h-6" />
       </SceneButton>
+
+      {children}
 
       {!showPreview && (
         <Textarea

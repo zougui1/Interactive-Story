@@ -1,22 +1,13 @@
 import { createContext, useContext, useRef, useMemo, useState, useCallback, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 
-import {
-  ChoiceType,
-  type Story,
-  type Scene,
-  type SceneChoice,
-  type SceneReference,
-} from '@zougui/interactive-story.story';
+import { SceneChoiceTargetType, type Story, type Scene, SceneChoice, SceneChoiceTarget } from '@zougui/interactive-story.story';
+import { useSelector } from '@xstate/store/react';
+import { storyStore } from '../../story.store';
+import { failEffectTypes } from '../stat/StatCheckDialog';
 
-export interface StoryTreeState {
+export interface StoryTreeState extends Story {
   readOnly?: boolean;
-  id: string;
-  title: string;
-  scenes: Record<string, Scene>;
-  choices: Record<string, SceneChoice>;
-  sceneReferences: Record<string, SceneReference>;
-  sceneIdStack: string[];
   currentScene: Scene;
   parentScene: Scene | undefined;
   addChoice: () => void;
@@ -28,9 +19,15 @@ export interface StoryTreeState {
   setChoiceJump: (choiceId: string, sceneId: string) => void;
   deleteChoice: (choiceId: string) => void;
   setTitle: (title: string) => void;
+  updateChoiceStatCheck: (data: NonNullable<SceneChoice['check']> & { choiceId: string }) => void;
+  removeChoiceStatCheck: (data: { choiceId: string }) => void;
+  updateChoiceTargetStatIncrements: (data: { choiceId: string; targetId: string; statIncrements: SceneChoiceTarget['statIncrements']; }) => void;
 }
 
 const StoryTreeContext = createContext<StoryTreeState | undefined>(undefined);
+
+// TODO refactor this. everything must be in the store and nothing in a local state
+//! refactor this. everything must be in the store and nothing in a local state
 
 export const StoryTreeProvider = ({
   children,
@@ -45,8 +42,8 @@ export const StoryTreeProvider = ({
   const [choices, setChoices] = useState(defaultStory.choices);
   const [sceneIdStack, setSceneIdStack] = useState(defaultStory.sceneIdStack);
   const [sceneReferences, setSceneReferences] = useState(defaultStory.sceneReferences);
-  const [stats, setStats] = useState(defaultStory.stats);
-  const [statReferences, setStatReferences] = useState(defaultStory.statReferences);
+  const stats = useSelector(storyStore, state => state.context.data.stats);
+  const statReferences = useSelector(storyStore, state => state.context.data.statReferences);
 
   const changeHandlerRef = useRef(onChange);
   changeHandlerRef.current = onChange;
@@ -92,10 +89,15 @@ export const StoryTreeProvider = ({
 
       const newChoice = {
         id: nanoid(),
-        type: ChoiceType.Branch,
         text: '',
-        sceneId: newScene.id,
-      };
+        targets: {
+          success: {
+            id: 'success',
+            type: SceneChoiceTargetType.Branch,
+            sceneId: newScene.id,
+          },
+        },
+      } satisfies SceneChoice;
 
       setChoices(prevChoices => {
         return {
@@ -141,7 +143,7 @@ export const StoryTreeProvider = ({
       const scene = prevScenes[sceneId];
 
       if (!scene) {
-        prevScenes;
+        return prevScenes;
       }
 
       return {
@@ -216,7 +218,7 @@ export const StoryTreeProvider = ({
         ...prevChoices,
         [choiceId]: {
           ...prevChoice,
-          type: ChoiceType.Branch,
+          type: SceneChoiceTargetType.Branch,
           sceneId: newScene.id,
         },
       };
@@ -246,7 +248,7 @@ export const StoryTreeProvider = ({
 
             return {
               ...choice,
-              type: ChoiceType.Branch,
+              type: SceneChoiceTargetType.Branch,
               sceneId: newScene.id,
             };
           }),
@@ -259,7 +261,7 @@ export const StoryTreeProvider = ({
     setChoices(prevChoices => {
       const prevChoice = prevChoices[choiceId];
 
-      if (!prevChoice || prevChoice.sceneId === sceneId) {
+      if (!prevChoice || prevChoice.targets.success.sceneId === sceneId) {
         return prevChoices;
       }
 
@@ -267,17 +269,23 @@ export const StoryTreeProvider = ({
         ...prevChoices,
         [choiceId]: {
           ...prevChoice,
-          type: ChoiceType.Jump,
-          sceneId,
-        },
+          targets: {
+            ...prevChoice.targets,
+            success: {
+              ...prevChoice.targets.success,
+              type: SceneChoiceTargetType.Jump,
+              sceneId,
+            },
+          },
+        } satisfies SceneChoice,
       };
 
-      const prevSceneReference = sceneReferences[prevChoice.sceneId];
+      const prevSceneReference = sceneReferences[prevChoice.targets.success.sceneId];
       const nextSceneReference = sceneReferences[sceneId];
 
       const newSceneReferences = {
         ...sceneReferences,
-        [prevChoice.sceneId]: {
+        [prevChoice.targets.success.sceneId]: {
           count: prevSceneReference ? prevSceneReference.count - 1 : 0,
         },
         [sceneId]: {
@@ -286,9 +294,9 @@ export const StoryTreeProvider = ({
       };
       const newScenes = { ...scenes };
 
-      if (newSceneReferences[prevChoice.sceneId].count <= 0) {
-        delete newSceneReferences[prevChoice.sceneId];
-        delete newScenes[prevChoice.sceneId];
+      if (newSceneReferences[prevChoice.targets.success.sceneId].count <= 0) {
+        delete newSceneReferences[prevChoice.targets.success.sceneId];
+        delete newScenes[prevChoice.targets.success.sceneId];
       }
 
       setSceneReferences(newSceneReferences);
@@ -326,7 +334,7 @@ export const StoryTreeProvider = ({
 
             return {
               ...choice,
-              type: ChoiceType.Jump,
+              type: SceneChoiceTargetType.Jump,
               sceneId,
             };
           }),
@@ -370,19 +378,19 @@ export const StoryTreeProvider = ({
       const newChoices = { ...prevChoices };
       delete newChoices[choiceId];
 
-      const sceneReference = sceneReferences[prevChoice.sceneId];
+      const sceneReference = sceneReferences[prevChoice.targets.success.sceneId];
 
       const newSceneReferences = {
         ...sceneReferences,
-        [prevChoice.sceneId]: {
+        [prevChoice.targets.success.sceneId]: {
           count: sceneReference ? sceneReference.count - 1 : 0,
         },
       };
       const newScenes = { ...scenes };
 
-      if (newSceneReferences[prevChoice.sceneId]?.count <= 0) {
-        delete newSceneReferences[prevChoice.sceneId];
-        delete newScenes[prevChoice.sceneId];
+      if (newSceneReferences[prevChoice.targets.success.sceneId]?.count <= 0) {
+        delete newSceneReferences[prevChoice.targets.success.sceneId];
+        delete newScenes[prevChoice.targets.success.sceneId];
       }
 
       setSceneReferences(newSceneReferences);
@@ -435,6 +443,147 @@ export const StoryTreeProvider = ({
     });*/
   }, [scenes, sceneReferences]);
 
+  const updateChoiceStatCheck = useCallback((data: NonNullable<SceneChoice['check']> & { choiceId: string }) => {
+    const { choiceId, failEffect, stats } = data;
+
+    setChoices(prevChoices => {
+      const branchNewScene = failEffect === failEffectTypes.branch && !prevChoices[choiceId].targets.fail;
+      const newScene = {
+        id: nanoid(),
+        text: '',
+      };
+
+      const newFailTarget = {
+        id: 'fail',
+        sceneId: newScene.id,
+        type: SceneChoiceTargetType.Branch,
+      } satisfies SceneChoiceTarget;
+
+      if (branchNewScene) {
+        setScenes((prevScenes) => {
+          const [currentSceneId] = sceneIdStack.slice().reverse();
+
+          if (!currentSceneId) {
+            return prevScenes;
+          }
+
+          const currentScene = prevScenes[currentSceneId];
+
+          if (!currentScene) {
+            prevScenes;
+          }
+
+          setSceneReferences((prevSceneReferences) => {
+            return {
+              ...prevSceneReferences,
+              [newScene.id]: { count: 1 },
+            };
+          });
+
+          return {
+            ...prevScenes,
+            [newScene.id]: newScene,
+          };
+        });
+      }
+
+      return {
+        ...prevChoices,
+        [choiceId]: {
+          ...prevChoices[choiceId],
+          check: {
+            stats,
+            failEffect,
+          },
+          targets: {
+            ...prevChoices[choiceId].targets,
+            fail: branchNewScene
+              ? newFailTarget
+              : prevChoices[choiceId].targets.fail,
+          },
+        },
+      };
+    });
+  }, [sceneIdStack]);
+
+  const removeChoiceStatCheck = useCallback((data: { choiceId: string }) => {
+    const { choiceId } = data;
+
+    setChoices(prevChoices => {
+      const prevChoice = prevChoices[choiceId];
+
+      if (prevChoice.targets.fail) {
+        const failTarget = prevChoice.targets.fail;
+
+        setScenes((prevScenes) => {
+          const [currentSceneId] = sceneIdStack.slice().reverse();
+
+          if (!currentSceneId) {
+            return prevScenes;
+          }
+
+          const currentScene = prevScenes[currentSceneId];
+
+          if (!currentScene) {
+            prevScenes;
+          }
+
+          setSceneReferences((prevSceneReferences) => {
+            const updatedSceneReferences = { ...prevSceneReferences };
+            delete updatedSceneReferences[failTarget.id];
+
+            return updatedSceneReferences;
+          });
+
+          const updatedScenes = { ...prevScenes };
+          delete updatedScenes[failTarget.id];
+
+          return updatedScenes;
+        });
+      }
+
+      return {
+        ...prevChoices,
+        [choiceId]: {
+          ...prevChoices[choiceId],
+          check: undefined,
+          targets: {
+            ...prevChoices[choiceId].targets,
+            fail: undefined,
+          },
+        },
+      };
+    });
+  }, [sceneIdStack]);
+
+  const updateChoiceTargetStatIncrements = useCallback((data: { choiceId: string; targetId: string; statIncrements: SceneChoiceTarget['statIncrements']; }) => {
+    setChoices(prevChoices => {
+      const { choiceId, targetId, statIncrements } = data;
+
+      const increments = { ...statIncrements };
+
+      for (const statId of Object.keys(increments)) {
+        if (!increments[statId]) {
+          delete increments[statId];
+        }
+      }
+
+      return {
+        ...prevChoices,
+        [choiceId]: {
+          ...prevChoices[choiceId],
+          targets: {
+            ...prevChoices[choiceId].targets,
+            [targetId]: {
+              ...prevChoices[choiceId].targets[targetId],
+              statIncrements: increments,
+            },
+          },
+        },
+      };
+    });
+  }, []);
+
   const state = useMemo(() => {
     const [currentSceneId, parentSceneId] = sceneIdStack.slice().reverse();
 
@@ -446,6 +595,8 @@ export const StoryTreeProvider = ({
       choices,
       sceneIdStack,
       sceneReferences,
+      stats,
+      statReferences,
       currentScene: scenes[currentSceneId],
       parentScene: parentSceneId ? scenes[parentSceneId] : undefined,
       addChoice,
@@ -457,6 +608,9 @@ export const StoryTreeProvider = ({
       setChoiceBranch,
       deleteChoice,
       setTitle,
+      updateChoiceStatCheck,
+      updateChoiceTargetStatIncrements,
+      removeChoiceStatCheck,
     };
   }, [
     readOnly,
@@ -466,6 +620,8 @@ export const StoryTreeProvider = ({
     choices,
     sceneIdStack,
     sceneReferences,
+    stats,
+    statReferences,
     addChoice,
     goToChildScene,
     goToParentScene,
@@ -475,6 +631,9 @@ export const StoryTreeProvider = ({
     setChoiceBranch,
     deleteChoice,
     setTitle,
+    updateChoiceStatCheck,
+    updateChoiceTargetStatIncrements,
+    removeChoiceStatCheck,
   ]);
 
   return <StoryTreeContext.Provider value={state}>{children}</StoryTreeContext.Provider>;

@@ -12,7 +12,7 @@ export const SceneRoot = ({ children, className, menuOpen }: SceneRootProps) => 
       <div
         onMouseOver={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className={cn('relative size-64 border border-slate-300 rounded py-7 px-4 bg-slate-900', className)}
+        className={cn('group relative size-64 border border-slate-300 rounded py-7 px-4 bg-slate-900', className)}
       >
         {children}
       </div>

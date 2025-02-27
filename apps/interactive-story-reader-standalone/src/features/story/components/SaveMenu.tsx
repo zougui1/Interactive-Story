@@ -1,11 +1,13 @@
-import { Menu } from '~/components/Menu';
-
-import { useStorySave, usePersistedSaves, StorySave } from '../storySave';
+import { useSelector } from '@xstate/store/react';
 import { Trash2 } from 'lucide-react';
+
+import { Menu } from '~/components/Menu';
 import { Button } from '~/components/Button';
 
+import { storySaveStore, usePersistedSaves, StorySave } from '../storySave';
+
 export const SaveMenu = () => {
-  const currentStorySave = useStorySave();
+  const currentStorySave = useSelector(storySaveStore, state => state.context);
   const [persistedSavesMap, setPersistedSaves] = usePersistedSaves();
 
   const persistedSaves = persistedSavesMap[currentStorySave.id]
@@ -13,7 +15,7 @@ export const SaveMenu = () => {
     : [...Object.values(persistedSavesMap), currentStorySave];
 
   const openSave = (save: StorySave) => {
-    currentStorySave.set(save);
+    storySaveStore.trigger.set({ save });
   }
 
   const deleteSave = (save: StorySave) => {

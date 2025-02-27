@@ -1,11 +1,9 @@
 import { useState } from 'react';
 
+import { Button, Dialog, Tabs } from '@zougui/react.ui';
 import type { Story } from '@zougui/interactive-story.story';
 
-import { Dialog } from '@renderer/components/Dialog';
 import { Input } from '@renderer/components/Input';
-import { Button } from '@renderer/components/Button';
-import { Tabs } from '@renderer/components/Tabs';
 
 import { StoryTree } from '../StoryTree';
 
@@ -37,12 +35,12 @@ export const ScenePickerDialog = ({ open, defaultSceneId = '', onClose, onSubmit
 
   return (
     <Dialog.Root open={open} onOpenChange={handleClose}>
-      <Dialog.Content className="max-w-7xl">
+      <Dialog.Content className="max-w-7xl max-h-[calc(100vh-40px)] flex flex-col">
         <Dialog.Header>
           <Dialog.Title>Pick a scene to jump to</Dialog.Title>
         </Dialog.Header>
 
-        <Dialog.Body className="flex flex-col items-center space-y-8 max-h-fit-min">
+        <Dialog.Body className="flex flex-col items-center space-y-8">
           <Tabs.Root
             onValueChange={v => setTabValue(v as TabType)}
             value={tabValue}

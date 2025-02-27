@@ -8,6 +8,10 @@ const renderRule = (
   _renderChildren: MarkdownToJSX.RuleOutput,
   state: MarkdownToJSX.State,
 ): React.ReactNode => {
+  if (node.type === RuleType.newlineCoalescer) {
+    return <br />;
+  }
+
   if (node.type === RuleType.image && node.alt) {
     const [name, value] = node.alt.split('=');
 

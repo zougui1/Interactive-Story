@@ -1,12 +1,29 @@
 import zod from 'zod';
 
-import { ChoiceType } from './enums';
+import { SceneChoiceTargetType } from './enums';
+
+const sceneChoiceTargetTypes = Object.values(SceneChoiceTargetType) as [SceneChoiceTargetType, ...SceneChoiceTargetType[]];
+
+export const sceneChoiceTargetSchema = zod.object({
+  id: zod.string(),
+  sceneId: zod.string(),
+  type: zod.enum(sceneChoiceTargetTypes),
+  statIncrements: zod.record(zod.number()).optional(),
+});
+
+export type SceneChoiceTarget = zod.infer<typeof sceneChoiceTargetSchema>;
 
 export const sceneChoiceSchema = zod.object({
   id: zod.string(),
   text: zod.string(),
-  type: zod.enum(Object.values(ChoiceType) as [ChoiceType, ...ChoiceType[]]),
-  sceneId: zod.string(),
+  check: zod.object({
+    stats: zod.record(zod.number()),
+    failEffect: zod.enum(['disable', 'hide', 'branch']),
+  }).optional(),
+  targets: zod.object({
+    success: sceneChoiceTargetSchema,
+    fail: sceneChoiceTargetSchema.optional(),
+  }),
 });
 
 export type SceneChoice = zod.infer<typeof sceneChoiceSchema>;
@@ -31,6 +48,7 @@ export const statSchema = zod.object({
   color: zod.string().trim(),
   startValue: zod.coerce.number().min(0),
   value: zod.coerce.number().min(0),
+  hidden: zod.boolean(),
 });
 
 export type Stat = zod.infer<typeof statSchema>;
