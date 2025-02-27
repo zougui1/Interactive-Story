@@ -1,10 +1,9 @@
-import { Fragment, useEffect, useRef } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useSelector } from '@xstate/store/react';
 
 import type { Story as StoryData, SceneChoice } from '@zougui/interactive-story.story';
 
 import { Separator } from '~/components/Separator';
-import { scrollToBottom } from '~/utils';
 
 import { ChoiceMenu } from '../components/ChoiceMenu';
 import { FadingTextContainer } from '../components/FadingTextContainer';
@@ -14,7 +13,6 @@ import { Progress } from '~/components/Progress';
 import { Button } from '~/components/Button';
 
 export const Story = ({ story }: StoryProps) => {
-  const menuRef = useRef<HTMLUListElement | null>(null);
   const currentStorySave = useSelector(storySaveStore, state => state.context);
 
   useEffect(() => {
@@ -78,10 +76,8 @@ export const Story = ({ story }: StoryProps) => {
     }
   }
 
-  useEffect(scrollToBottom, [acts]);
-
   useEffect(() => {
-    menuRef.current?.scrollIntoView();
+    window.scrollTo({ top: document.body.scrollHeight });
   }, [acts]);
 
   return (
@@ -137,11 +133,16 @@ export const Story = ({ story }: StoryProps) => {
         {currentScene.choices && (
           <ChoiceMenu
             key={currentScene.id}
-            ref={menuRef}
             story={story}
             choices={currentScene.choices.map(choiceId => story.choices[choiceId]).filter(Boolean)}
             onChoose={handleChoose}
           />
+        )}
+
+        {!currentScene.choices?.length && (
+          <div>
+            <Button onClick={() => storySaveStore.trigger.restart({ story })}>Play Again</Button>
+          </div>
         )}
       </div>
     </div>

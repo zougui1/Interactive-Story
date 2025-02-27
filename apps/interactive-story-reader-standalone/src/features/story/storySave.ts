@@ -17,6 +17,20 @@ export const storySaveStore = createStore({
     acts: [],
   } as StorySave,
 
+  emits: {
+    persistSave: ({ save }: { save: StorySave }) => {
+      const value = window.localStorage.getItem(savesStorageKey);
+      const saves = value ? parseSaves(value) : {};
+
+      const newSaves = {
+        ...saves,
+        [save.id]: save,
+      };
+
+      window.localStorage.setItem(savesStorageKey, JSON.stringify(newSaves));
+    },
+  },
+
   on: {
     init: (context, event: { story: Story }) => {
       const stats: Record<string, Stat> = {};
@@ -36,6 +50,32 @@ export const storySaveStore = createStore({
       };
     },
 
+    restart: (context, event: { story: Story }, enqueue) => {
+      const stats: Record<string, Stat> = {};
+
+      for (const stat of Object.values(event.story.stats)) {
+        stats[stat.id] = {
+          id: stat.id,
+          name: stat.name,
+          color: stat.color,
+          value: stat.startValue,
+        };
+      }
+
+      const updatedContext = {
+        id: context.id,
+        date: new Date(),
+        stats,
+        acts: [],
+      };
+
+      enqueue.emit.persistSave({
+        save: updatedContext,
+      });
+
+      return updatedContext;
+    },
+
     set: (_context, { save }: { save: StorySave; }) => {
       return save;
     },
@@ -49,16 +89,8 @@ export const storySaveStore = createStore({
         ],
       };
 
-      enqueue.effect(() => {
-        const value = window.localStorage.getItem(savesStorageKey);
-        const saves = value ? parseSaves(value) : {};
-
-        const newSaves = {
-          ...saves,
-          [updatedContext.id]: updatedContext,
-        };
-
-        window.localStorage.setItem(savesStorageKey, JSON.stringify(newSaves));
+      enqueue.emit.persistSave({
+        save: updatedContext,
       });
 
       return updatedContext;
