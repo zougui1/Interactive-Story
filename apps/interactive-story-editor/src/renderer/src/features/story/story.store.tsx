@@ -78,7 +78,6 @@ export const storyStore = createStore({
 
     updateSceneText: (context, event: { id: string; text: string; }) => {
       if (!context.data.scenes[event.id]) {
-        console.log('no scene')
         return context;
       }
 
@@ -318,16 +317,15 @@ export const storyStore = createStore({
         if (branchNewScene) {
           draft.data.scenes[newScene.id] = newScene;
           draft.data.sceneReferences[newScene.id] = { count: 1 };
-
           draft.data.choices[choiceId].targets.fail = newFailTarget;
+        }
 
-          if (currentChoice.targets.fail) {
-            draft.data.sceneReferences[currentChoice.targets.fail.sceneId].count--;
+        if (currentChoice.targets.fail) {
+          draft.data.sceneReferences[currentChoice.targets.fail.sceneId].count--;
 
-            if (draft.data.sceneReferences[currentChoice.targets.fail.sceneId].count <= 0) {
-              delete draft.data.sceneReferences[currentChoice.targets.fail.sceneId];
-              delete draft.data.scenes[currentChoice.targets.fail.sceneId];
-            }
+          if (draft.data.sceneReferences[currentChoice.targets.fail.sceneId].count <= 0) {
+            delete draft.data.sceneReferences[currentChoice.targets.fail.sceneId];
+            delete draft.data.scenes[currentChoice.targets.fail.sceneId];
           }
         }
 
@@ -378,7 +376,7 @@ export const storyStore = createStore({
       return produce(context, draft => {
         for (const id of Object.keys(statIncrements ?? {})) {
           // TODO update stat references
-          const statReference = draft.data.statReferences[id];
+          //const statReference = draft.data.statReferences[id];
           const increments = { ...statIncrements };
 
           for (const statId of Object.keys(increments)) {

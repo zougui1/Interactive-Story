@@ -60,6 +60,7 @@ export const StoryTreeSceneChoice = ({ choiceId }: StoryTreeSceneChoiceProps) =>
         choice={choice}
         target={successTarget}
         onOpenChange={setMenuOpen}
+        placeholder="Scene text"
       />
     </div>
   );
