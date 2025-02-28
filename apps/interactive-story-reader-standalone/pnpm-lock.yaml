@@ -42,8 +42,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@zougui/interactive-story.story':
-        specifier: ^0.5.3
-        version: 0.5.3
+        specifier: ^0.6.0
+        version: 0.6.0
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
@@ -1065,8 +1065,8 @@ packages:
   '@zougui/common.math-utils@0.4.0':
     resolution: {integrity: sha512-GnRqKoOazN8NDnzFzZCm7bMLwUrRbaKJf9wk1zAQRmvE7R9v2k5K+2JkVbWp3svX8fIYNlt68HgQAPC9eYiACg==}
 
-  '@zougui/interactive-story.story@0.5.3':
-    resolution: {integrity: sha512-2ywdpIx2b6A74FNQDqAdwORwLCWkV86o2DtDX/IVVnO7Bkbgs1dCyAV7rxflKVLlJhWRyzxcqKRY1BlHBXaAng==}
+  '@zougui/interactive-story.story@0.6.0':
+    resolution: {integrity: sha512-geexv6WB9JGm98qGGArK/ahzXVlExWJ9Y/Qogb9zLVQGDRVWXGwrVQLrFM1p+HV9dwVv2ZhJK8ojCZUd/uWH2w==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -3262,7 +3262,7 @@ snapshots:
 
   '@zougui/common.math-utils@0.4.0': {}
 
-  '@zougui/interactive-story.story@0.5.3':
+  '@zougui/interactive-story.story@0.6.0':
     dependencies:
       zod: 3.24.1
 

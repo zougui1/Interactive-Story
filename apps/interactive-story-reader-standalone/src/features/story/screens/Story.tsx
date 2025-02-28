@@ -12,20 +12,26 @@ import { ChoiceMenu } from '../components/ChoiceMenu';
 import { FadingTextContainer } from '../components/FadingTextContainer';
 import { storySaveStore } from '../storySave';
 import { story } from '../story';
+import { randomItem } from '~/utils';
 
 export const Story = () => {
   const currentStorySave = useSelector(storySaveStore, state => state.context);
 
-  const acts = currentStorySave.acts.map(({ choiceId, targetId }) => {
+  const acts = currentStorySave.acts.map(({ choiceId, targetType, targetId }) => {
     const choice = story.choices[choiceId];
-    const target = choice.targets[targetId as 'success'];
+    const target = choice.targets[targetType]?.[targetId];
+
+    if (!target) {
+      return;
+    }
+
     const scene = story.scenes[target.sceneId];
 
     return {
       scene,
       choice,
     };
-  });
+  }).filter(Boolean).map(act => act!);
 
   const lastAct = acts.pop();
   const currentScene = lastAct
@@ -40,13 +46,16 @@ export const Story = () => {
 
   const handleChoose = (choice: SceneChoice) => {
     if (!choice.check) {
+      const target = randomItem(Object.values(choice.targets.success ?? {}));
+
       storySaveStore.trigger.addAct({
         choiceId: choice.id,
-        targetId: choice.targets.success.id,
+        targetId: target.targetId,
+        targetType: target.targetType,
       });
 
-      if (choice.targets.success.statIncrements) {
-        storySaveStore.trigger.incrementStats({ stats: choice.targets.success.statIncrements });
+      if (target.statIncrements) {
+        storySaveStore.trigger.incrementStats({ stats: target.statIncrements });
       }
 
       return;
@@ -57,15 +66,18 @@ export const Story = () => {
       return;
     }
 
-    const target = checkStats(choice.check.stats) ? choice.targets.success : choice.targets.fail;
+    const targetGroup = checkStats(choice.check.stats) ? choice.targets.success : choice.targets.fail;
 
-    if (!target) {
+    if (!targetGroup) {
       return;
     }
 
+    const target = randomItem(Object.values(targetGroup));
+
     storySaveStore.trigger.addAct({
       choiceId: choice.id,
-      targetId: target.id,
+      targetId: target.targetId,
+      targetType: target.targetType,
     });
 
     if (target.statIncrements) {

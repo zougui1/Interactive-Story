@@ -10,6 +10,8 @@ import { story } from './story';
 
 const savesStorageKey = 'saves';
 
+export type TargetType = 'success' | 'fail';
+
 const getStartStats = (): Record<string, Stat> => {
   const stats: Record<string, Stat> = {};
 
@@ -67,7 +69,7 @@ export const storySaveStore = createStore({
       return save;
     },
 
-    addAct: (context, event: { choiceId: string; targetId: string; }, enqueue) => {
+    addAct: (context, event: { choiceId: string; targetId: string; targetType: TargetType; }, enqueue) => {
       const updatedContext = {
         ...context,
         acts: [
@@ -100,6 +102,7 @@ export const storySaveStore = createStore({
 export const actSchema = z.object({
   choiceId: z.string(),
   targetId: z.string(),
+  targetType: z.enum(['success', 'fail']),
 });
 
 export const statSchema = z.object({

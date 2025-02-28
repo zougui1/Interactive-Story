@@ -21,7 +21,7 @@
     "@radix-ui/react-tooltip": "^1.1.2",
     "@xstate/store": "^3.2.0",
     "@zougui/common.math-utils": "^0.4.0",
-    "@zougui/interactive-story.story": "^0.5.3",
+    "@zougui/interactive-story.story": "^0.6.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "env-var": "^7.5.0",
