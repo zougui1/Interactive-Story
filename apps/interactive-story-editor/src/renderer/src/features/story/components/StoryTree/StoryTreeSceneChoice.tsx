@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, X } from 'lucide-react';
+import { Check, Plus } from 'lucide-react';
 import { useSelector } from '@xstate/store/react';
 
 import { reorderArray } from '@renderer/utils';
@@ -10,7 +10,7 @@ import { BadgeList } from './BadgeList';
 import { TargetSceneTextarea } from './TargetSceneTextarea';
 import { Scene } from '../Scene';
 import { failEffectTypes } from '../stat/StatCheckDialog';
-import { storyStore } from '../../story.store';
+import { storyStore, TargetType } from '../../story.store';
 
 export interface BadgeProps {
   children?: React.ReactNode;
@@ -23,10 +23,17 @@ export const StoryTreeSceneChoice = ({ choiceId }: StoryTreeSceneChoiceProps) =>
   const choice = useSelector(storyStore, state => state.context.data.choices[choiceId]);
   const stats = useSelector(storyStore, state => state.context.data.stats);
 
-  const successTarget = choice.targets.success;
-  const failTarget = choice.targets.fail;
+  const successTargets = choice.targets.success ?? {};
+  const failTargets = choice.targets.fail ?? {};
 
   const hasCheckFailBranching = choice.check?.failEffect === failEffectTypes.branch;
+
+  const handleNewTarget = (targetType: TargetType) => () => {
+    storyStore.trigger.addChoiceTarget({
+      choiceId,
+      targetType,
+    });
+  }
 
   const statsCheck = Object
     .entries(choice.check?.stats ?? {})
@@ -55,50 +62,87 @@ export const StoryTreeSceneChoice = ({ choiceId }: StoryTreeSceneChoiceProps) =>
     </Scene.Textarea>
   );
 
-  const monoTargetSceneTextarea = (
-    <div className="h-3/5 w-full flex flex-col items-center">
-      <TargetSceneTextarea
-        choice={choice}
-        target={successTarget}
-        onOpenChange={setMenuOpen}
-        placeholder="Scene text"
-      />
+  const monoTargetSceneTextareas = (
+    <div className="h-3/5 w-full whitespace-nowrap flex gap-2 overflow-x-auto box-content pb-5">
+      {Object.values(successTargets).map(successTarget => (
+        <div key={successTarget.targetId} className="h-full min-w-[100%] flex flex-col items-center">
+          <TargetSceneTextarea
+            choice={choice}
+            target={successTarget}
+            onOpenChange={setMenuOpen}
+            placeholder="Scene text"
+          >
+            <Scene.Button
+              showOnHoverOnly
+              position="middleRight"
+              className="size-6"
+              onClick={handleNewTarget(successTarget.targetType)}
+            >
+              <Plus className="size-4" />
+            </Scene.Button>
+          </TargetSceneTextarea>
+        </div>
+      ))}
     </div>
   );
 
   const splitTargetSceneTextarea = (
-    <div className="flex gap-1 h-3/5 w-full">
-      <div className="flex flex-col items-center w-1/2">
-        <TargetSceneTextarea
-          choice={choice}
-          target={successTarget}
-          onOpenChange={setMenuOpen}
-          placeholder="Success scene text"
-        >
-          <Scene.Badge position="topLeft" className="size-6 translate-x-full ml-1.5">
-            <Check className="size-4" />
-          </Scene.Badge>
-        </TargetSceneTextarea>
+    <div className="flex gap-1 h-[calc(60%-2rem)] w-full">
+      <div className="h-full w-1/2 whitespace-nowrap flex gap-2 overflow-x-auto box-content pb-5">
+        {Object.values(successTargets).map(successTarget => (
+          <div key={successTarget.targetId} className="h-full min-w-[100%] flex flex-col items-center">
+            <TargetSceneTextarea
+              choice={choice}
+              target={successTarget}
+              onOpenChange={setMenuOpen}
+              placeholder="Success scene text"
+            >
+              <Scene.Badge position="topLeft" className="size-6 translate-x-full ml-1.5">
+                <Check className="size-4" />
+              </Scene.Badge>
+
+              <Scene.Button
+                showOnHoverOnly
+                position="middleRight"
+                className="size-6"
+                onClick={handleNewTarget(successTarget.targetType)}
+              >
+                <Plus className="size-4" />
+              </Scene.Button>
+            </TargetSceneTextarea>
+          </div>
+        ))}
       </div>
-      <div className="flex flex-col items-center w-1/2">
-        {failTarget && (
-          <TargetSceneTextarea
-            choice={choice}
-            target={failTarget}
-            onOpenChange={setMenuOpen}
-            placeholder="Fail scene text"
-          >
-            <Scene.Badge position="topLeft" className="size-6 translate-x-full ml-1.5">
-              <X className="size-4" />
-            </Scene.Badge>
-          </TargetSceneTextarea>
-        )}
+      <div className="h-full w-1/2 whitespace-nowrap flex gap-2 overflow-x-auto box-content pb-5">
+        {Object.values(failTargets).map(failTarget => (
+          <div key={failTarget.targetId} className="h-full min-w-[100%] flex flex-col items-center">
+            <TargetSceneTextarea
+              choice={choice}
+              target={failTarget}
+              onOpenChange={setMenuOpen}
+              placeholder="Fail scene text"
+            >
+              <Scene.Badge position="topLeft" className="size-6 translate-x-full ml-1.5">
+                <Check className="size-4" />
+              </Scene.Badge>
+
+              <Scene.Button
+                showOnHoverOnly
+                position="middleRight"
+                className="size-6"
+                onClick={handleNewTarget(failTarget.targetType)}
+              >
+                <Plus className="size-4" />
+              </Scene.Button>
+            </TargetSceneTextarea>
+          </div>
+        ))}
       </div>
     </div>
   );
 
   return (
-    <Scene.Root menuOpen={menuOpen} className="flex flex-col items-center gap-2 w-96 h-[30rem]">
+    <Scene.Root menuOpen={menuOpen} className="flex flex-col items-center gap-2 w-96 pb-2 h-[30rem]">
       {!story.readOnly && (
         <StoryTreeChoiceMenu
           choice={choice}
@@ -107,7 +151,7 @@ export const StoryTreeSceneChoice = ({ choiceId }: StoryTreeSceneChoiceProps) =>
       )}
 
       {choiceTextarea}
-      {hasCheckFailBranching ? splitTargetSceneTextarea : monoTargetSceneTextarea}
+      {hasCheckFailBranching ? splitTargetSceneTextarea : monoTargetSceneTextareas}
     </Scene.Root>
   );
 }

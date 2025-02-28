@@ -14,6 +14,7 @@ const badge = tv({
       topRight: 'top-0 right-2 -translate-y-1/2',
       topLeft: 'top-0 left-2 -translate-y-1/2',
       bottomMiddle: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2',
+      middleRight: 'top-1/2 right-0 -translate-y-1/2',
     },
   },
 });

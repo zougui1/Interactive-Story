@@ -10,7 +10,7 @@ import { Input } from '@renderer/components/Input';
 import { storyStore } from '../../story.store';
 
 // TODO use useAppForm
-export const StatIncrementDecrementDialog = ({ choiceId, targetId, open, onClose, defaultValues }: StatIncrementDecrementDialogProps) => {
+export const StatIncrementDecrementDialog = ({ choiceId, target, open, onClose, defaultValues }: StatIncrementDecrementDialogProps) => {
   const stats = useSelector(storyStore, state => state.context.data.stats);
   const [statIncrements, setStatIncrements] = useState<Record<string, string | number>>(defaultValues ?? {});
 
@@ -50,7 +50,8 @@ export const StatIncrementDecrementDialog = ({ choiceId, targetId, open, onClose
       storyStore.trigger.updateChoiceTargetStatIncrements({
         statIncrements: stats,
         choiceId,
-        targetId,
+        targetId: target.targetId,
+        targetType: target.targetType,
       });
       close(stats);
     }
@@ -93,7 +94,7 @@ export const StatIncrementDecrementDialog = ({ choiceId, targetId, open, onClose
 
 export interface StatIncrementDecrementDialogProps {
   choiceId: string;
-  targetId: string;
+  target: SceneChoiceTarget;
   open: boolean;
   onClose: () => void;
   defaultValues?: SceneChoiceTarget['statIncrements'];

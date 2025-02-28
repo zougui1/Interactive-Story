@@ -10,7 +10,7 @@ export const SceneTextarea = forwardRef<HTMLTextAreaElement, SceneTextareaProps>
   const [showPreview, setShowPreview] = useState(false);
 
   return (
-    <div className={cn('relative w-full h-full', className)}>
+    <div className={cn('relative w-full h-full px-1', className)}>
       <SceneButton
         position="topMiddle"
         onClick={() => setShowPreview(b => !b)}

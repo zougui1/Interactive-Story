@@ -13,9 +13,7 @@ import { ToastMessage } from '@renderer/components/ToastMessage';
 import { createDefaultStoryData } from './defaultStoryData';
 import { failEffectTypes } from './components/stat/StatCheckDialog';
 
-const isTargetId = (value: string): value is 'success' | 'fail' => {
-  return value === 'success' || value === 'fail';
-}
+export type TargetType = 'success' | 'fail';
 
 export interface StoryStore {
   syntheticKey: string;
@@ -108,14 +106,19 @@ export const storyStore = createStore({
           text: '',
         };
 
+        const newTarget = {
+          targetId: nanoid(),
+          targetType: 'success',
+          type: SceneChoiceTargetType.Branch,
+          sceneId: newScene.id,
+        } satisfies SceneChoiceTarget;
+
         const newChoice = {
           id: nanoid(),
           text: '',
           targets: {
             success: {
-              id: 'success',
-              type: SceneChoiceTargetType.Branch,
-              sceneId: newScene.id,
+              [newTarget.targetId]: newTarget,
             },
           },
         } satisfies SceneChoice;
@@ -128,13 +131,43 @@ export const storyStore = createStore({
       });
     },
 
-    setChoiceJump: (context, event: { choiceId: string; targetId: string; sceneId: string }) => {
-      if (!isTargetId(event.targetId)) {
+    addChoiceTarget: (context, event: { choiceId: string; targetType: TargetType; }) => {
+      const currentChoice = context.data.choices[event.choiceId];
+      const currentChoiceTargetGroup = currentChoice.targets[event.targetType];
+
+      if (!currentChoiceTargetGroup) {
         return context;
       }
 
+      return produce(context, draft => {
+        const draftChoice = draft.data.choices[event.choiceId];
+        const draftTargetGroup = draftChoice.targets[event.targetType];
+
+        if(!draftTargetGroup) {
+          return;
+        }
+
+        const newScene = {
+          id: nanoid(),
+          text: '',
+        };
+
+        const newTarget = {
+          targetId: nanoid(),
+          targetType: event.targetType,
+          type: SceneChoiceTargetType.Branch,
+          sceneId: newScene.id,
+        } satisfies SceneChoiceTarget;
+
+        draft.data.scenes[newScene.id] = newScene;
+        draft.data.sceneReferences[newScene.id] = { count: 1 };
+        draftTargetGroup[newTarget.targetId] = newTarget;
+      });
+    },
+
+    setChoiceJump: (context, event: { choiceId: string; targetType: TargetType; targetId: string; sceneId: string }) => {
       const currentChoice = context.data.choices[event.choiceId];
-      const currentChoiceTarget = currentChoice.targets[event.targetId];
+      const currentChoiceTarget = currentChoice.targets[event.targetType]?.[event.targetId];
 
       if (!currentChoiceTarget || currentChoiceTarget.sceneId === event.sceneId) {
         return context;
@@ -142,7 +175,7 @@ export const storyStore = createStore({
 
       return produce(context, draft => {
         const draftChoice = draft.data.choices[event.choiceId];
-        const draftTarget = draftChoice.targets[event.targetId];
+        const draftTarget = draftChoice.targets[event.targetType]?.[event.targetId];
 
         if(!draftTarget) {
           return;
@@ -164,13 +197,9 @@ export const storyStore = createStore({
       });
     },
 
-    setChoiceBranch: (context, event: { choiceId: string; targetId: string; }) => {
-      if (!isTargetId(event.targetId)) {
-        return context;
-      }
-
+    setChoiceBranch: (context, event: { choiceId: string; targetType: TargetType; targetId: string; }) => {
       const currentChoice = context.data.choices[event.choiceId];
-      const currentChoiceTarget = currentChoice.targets[event.targetId];
+      const currentChoiceTarget = currentChoice.targets[event.targetType]?.[event.targetId];
 
       if (!currentChoiceTarget) {
         return context;
@@ -178,7 +207,7 @@ export const storyStore = createStore({
 
       return produce(context, draft => {
         const draftChoice = draft.data.choices[event.choiceId];
-        const draftTarget = draftChoice.targets[event.targetId];
+        const draftTarget = draftChoice.targets[event.targetType]?.[event.targetId];
 
         if(!draftTarget) {
           return;
@@ -213,29 +242,49 @@ export const storyStore = createStore({
 
       return produce(context, draft => {
         const draftChoice = draft.data.choices[event.id];
-        const draftSuccessTarget = draftChoice.targets.success;
-        const draftFailTarget = draftChoice.targets.fail;
 
-        const successSceneReference = draft.data.sceneReferences[draftSuccessTarget.sceneId];
-        const failSceneReference = draftFailTarget && draft.data.sceneReferences[draftFailTarget.sceneId];
+        const targets = [
+          ...Object.values(draftChoice.targets.success ?? {}),
+          ...Object.values(draftChoice.targets.fail ?? {}),
+        ];
 
-        successSceneReference.count--;
+        for (const target of targets) {
+          const sceneReference = draft.data.sceneReferences[target.sceneId];
+          sceneReference.count--;
 
-        if (failSceneReference) {
-          successSceneReference.count--;
-        }
-
-        if (successSceneReference.count <= 0) {
-          delete draft.data.sceneReferences[draftSuccessTarget.sceneId];
-          delete draft.data.scenes[draftSuccessTarget.sceneId];
-        }
-
-        if (failSceneReference && failSceneReference.count <= 0) {
-          delete draft.data.sceneReferences[draftFailTarget.sceneId];
-          delete draft.data.scenes[draftFailTarget.sceneId];
+          if (sceneReference.count <= 0) {
+            delete draft.data.sceneReferences[target.sceneId];
+            delete draft.data.scenes[target.sceneId];
+          }
         }
 
         delete draft.data.choices[event.id];
+      });
+    },
+
+    deleteChoiceTarget: (context, event: { choiceId: string; targetType: TargetType; targetId: string; }) => {
+      if (!context.data.choices[event.choiceId]?.targets[event.targetType]?.[event.targetId]) {
+        return context;
+      }
+
+      return produce(context, draft => {
+        const draftChoice = draft.data.choices[event.choiceId];
+        const draftTargetGroup = draftChoice.targets[event.targetType];
+        const draftTarget = draftTargetGroup?.[event.targetId];
+
+        if (!draftTargetGroup || !draftTarget) {
+          return;
+        }
+
+        const sceneReference = draft.data.sceneReferences[draftTarget.sceneId];
+        sceneReference.count--;
+
+        if (sceneReference.count <= 0) {
+          delete draft.data.sceneReferences[draftTarget.sceneId];
+          delete draft.data.scenes[draftTarget.sceneId];
+        }
+
+        delete draftTargetGroup[event.targetId];
       });
     },
 
@@ -303,31 +352,23 @@ export const storyStore = createStore({
       }
 
       return produce(context, draft => {
-        const branchNewScene = failEffect === failEffectTypes.branch && !currentChoice.targets.fail;
         const newScene = {
           id: nanoid(),
           text: '',
         };
 
-        const newFailTarget = {
-          id: 'fail',
-          sceneId: newScene.id,
-          type: SceneChoiceTargetType.Branch,
-        } satisfies SceneChoiceTarget;
+        if (failEffect === failEffectTypes.branch && !Object.keys(currentChoice.targets.fail ?? {}).length) {
+          const newFailTarget = {
+            targetId: nanoid(),
+            targetType: 'fail',
+            sceneId: newScene.id,
+            type: SceneChoiceTargetType.Branch,
+          } satisfies SceneChoiceTarget;
 
-        if (branchNewScene) {
           draft.data.scenes[newScene.id] = newScene;
           draft.data.sceneReferences[newScene.id] = { count: 1 };
-          draft.data.choices[choiceId].targets.fail = newFailTarget;
-        }
-
-        if (currentChoice.targets.fail) {
-          draft.data.sceneReferences[currentChoice.targets.fail.sceneId].count--;
-
-          if (draft.data.sceneReferences[currentChoice.targets.fail.sceneId].count <= 0) {
-            delete draft.data.sceneReferences[currentChoice.targets.fail.sceneId];
-            delete draft.data.scenes[currentChoice.targets.fail.sceneId];
-          }
+          draft.data.choices[choiceId].targets.fail ??= {};
+          draft.data.choices[choiceId].targets.fail[newFailTarget.targetId] = newFailTarget;
         }
 
         draft.data.choices[choiceId].check = { stats, failEffect };
@@ -344,31 +385,29 @@ export const storyStore = createStore({
 
       return produce(context, draft => {
         const choice = draft.data.choices[choiceId];
-        const failTarget = choice.targets.fail;
 
-        if (failTarget) {
-          draft.data.sceneReferences[failTarget.sceneId].count--;
+        for (const target of Object.values(choice.targets.fail ?? {})) {
+          if (target) {
+            draft.data.sceneReferences[target.sceneId].count--;
 
-          if (draft.data.sceneReferences[failTarget.sceneId].count <= 0) {
-            delete draft.data.sceneReferences[failTarget.sceneId];
-            delete draft.data.scenes[failTarget.sceneId];
+            if (draft.data.sceneReferences[target.sceneId].count <= 0) {
+              delete draft.data.sceneReferences[target.sceneId];
+              delete draft.data.scenes[target.sceneId];
+            }
           }
         }
+
 
         choice.check = undefined;
         choice.targets.fail = undefined;
       });
     },
 
-    updateChoiceTargetStatIncrements: (context, event: { choiceId: string; targetId: string; statIncrements: SceneChoiceTarget['statIncrements']; }) => {
-      const { choiceId, targetId, statIncrements } = event;
-
-      if (!isTargetId(targetId)) {
-        return context;
-      }
+    updateChoiceTargetStatIncrements: (context, event: { choiceId: string; targetType: TargetType; targetId: string; statIncrements: SceneChoiceTarget['statIncrements']; }) => {
+      const { choiceId, targetType, targetId, statIncrements } = event;
 
       const currentChoice = context.data.choices[choiceId];
-      const currentChoiceTarget = currentChoice.targets[targetId];
+      const currentChoiceTarget = currentChoice.targets[targetType]?.[targetId];
 
       if (!currentChoiceTarget) {
         return context;
@@ -386,8 +425,8 @@ export const storyStore = createStore({
             }
           }
 
-          if (draft.data.choices[choiceId].targets[targetId]) {
-            draft.data.choices[choiceId].targets[targetId].statIncrements = increments;
+          if (draft.data.choices[choiceId].targets[targetType]?.[targetId]) {
+            draft.data.choices[choiceId].targets[targetType][targetId].statIncrements = increments;
           }
         }
       });

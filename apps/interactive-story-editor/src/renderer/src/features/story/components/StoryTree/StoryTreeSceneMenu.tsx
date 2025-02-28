@@ -1,5 +1,5 @@
 import { useDeferredValue, useState } from 'react';
-import { ArrowUpToLine, EllipsisVertical, Split, Copy, ChartBarIncreasing } from 'lucide-react';
+import { ArrowUpToLine, EllipsisVertical, Split, Copy, ChartBarIncreasing, Trash2 } from 'lucide-react';
 import { useSelector } from '@xstate/store/react';
 
 import { SceneChoiceTarget, SceneChoiceTargetType, type SceneChoice } from '@zougui/interactive-story.story';
@@ -23,6 +23,8 @@ export const StoryTreeSceneMenu = ({ choice, target, onOpenChange }: StoryTreeSc
   const deferredOpenScenePickerDialog = useDeferredValue(openScenePickerDialog);
   const deferredOpenStatIncrementDecrementDialog = useDeferredValue(openStatIncrementDecrementDialog);
 
+  const hasSiblings = Object.keys(choice.targets[target.targetType] ?? {}).length > 1;
+
   return (
     <>
       <ScenePickerDialog
@@ -33,12 +35,12 @@ export const StoryTreeSceneMenu = ({ choice, target, onOpenChange }: StoryTreeSc
           sceneIdStack: [rootId],
         }}
         defaultSceneId={target.type === SceneChoiceTargetType.Jump ? target.sceneId : undefined}
-        onSubmit={sceneId => storyStore.trigger.setChoiceJump({ choiceId: choice.id, targetId: target.id, sceneId: sceneId })}
+        onSubmit={sceneId => storyStore.trigger.setChoiceJump({ choiceId: choice.id, targetType: target.targetType, targetId: target.targetId, sceneId: sceneId })}
       />
 
       <StatIncrementDecrementDialog
         choiceId={choice.id}
-        targetId={target.id}
+        target={target}
         open={deferredOpenStatIncrementDecrementDialog}
         onClose={() => setOpenStatIncrementDecrementDialog(false)}
         defaultValues={target.statIncrements}
@@ -58,7 +60,7 @@ export const StoryTreeSceneMenu = ({ choice, target, onOpenChange }: StoryTreeSc
           </Dropdown.Item>
 
           {target.type !== SceneChoiceTargetType.Branch && (
-            <Dropdown.Item onClick={() => storyStore.trigger.setChoiceBranch({ choiceId: choice.id, targetId: target.id })}>
+            <Dropdown.Item onClick={() => storyStore.trigger.setChoiceBranch({ choiceId: choice.id, targetType: target.targetType, targetId: target.targetId })}>
               <Split className="w-4 mr-2" />
               <span>Branch scene</span>
             </Dropdown.Item>
@@ -88,6 +90,16 @@ export const StoryTreeSceneMenu = ({ choice, target, onOpenChange }: StoryTreeSc
           >
             <ChartBarIncreasing className="w-4 mr-2" />
             <span>Increment/decrement stats</span>
+          </Dropdown.Item>
+
+          <Dropdown.Separator />
+
+          <Dropdown.Item
+            disabled={!hasSiblings}
+            onClick={() => storyStore.trigger.deleteChoiceTarget({ choiceId: choice.id, targetType: target.targetType, targetId: target.targetId })}
+          >
+            <Trash2 className="w-4 text-red-500 mr-2" />
+            <span>Delete choice</span>
           </Dropdown.Item>
         </Dropdown.Content>
       </Dropdown.Root>
