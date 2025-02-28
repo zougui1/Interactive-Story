@@ -1,15 +1,16 @@
 import { createStore } from '@xstate/store';
 import { nanoid } from 'nanoid';
 import { produce } from 'immer';
+import { toast } from 'react-toastify';
+import { fromError } from 'zod-validation-error';
 
 import { Electron, electronApi } from '@zougui/interactive-story.electron-api';
 import { SceneChoice, SceneChoiceTarget, SceneChoiceTargetType, Stat, type Story } from '@zougui/interactive-story.story';
 
-import { createDefaultStoryData } from './defaultStoryData';
-import { toast } from 'react-toastify';
-import { ToastMessage } from '@renderer/components/ToastMessage';
-import { fromError } from 'zod-validation-error';
 import { getErrorMessage } from '@renderer/utils';
+import { ToastMessage } from '@renderer/components/ToastMessage';
+
+import { createDefaultStoryData } from './defaultStoryData';
 import { failEffectTypes } from './components/stat/StatCheckDialog';
 
 const isTargetId = (value: string): value is 'success' | 'fail' => {

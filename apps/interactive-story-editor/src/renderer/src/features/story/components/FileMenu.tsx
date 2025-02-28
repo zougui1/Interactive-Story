@@ -1,10 +1,10 @@
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useSelector } from '@xstate/store/react';
 
 import { Electron } from '@zougui/interactive-story.electron-api';
 
 import { Menu } from '@renderer/components/Menu';
 
-import { useSelector } from '@xstate/store/react';
 import { storyStore } from '../story.store';
 
 enum ShortcutMap {

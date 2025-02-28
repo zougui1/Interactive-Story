@@ -1,7 +1,7 @@
 import { Tooltip } from '@renderer/components/Tooltip';
+import { cn } from '@renderer/utils';
 
 import { Badge } from './Badge';
-import { cn } from '@renderer/utils';
 
 export const BadgeList = ({ items, renderValue, className }: BadgeListProps) => {
   return (

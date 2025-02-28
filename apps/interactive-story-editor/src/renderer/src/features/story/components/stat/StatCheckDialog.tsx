@@ -1,11 +1,14 @@
-import { useSelector } from '@xstate/store/react';
-import { Button, Dialog, Select } from '@zougui/react.ui';
-import { storyStore } from '../../story.store';
-import { Input } from '@renderer/components/Input';
 import { useState } from 'react';
 import { isNumber } from 'radash';
-import { Label } from '@renderer/components/Label';
+import { useSelector } from '@xstate/store/react';
+
+import { Button, Dialog, Select } from '@zougui/react.ui';
 import { SceneChoice } from '@zougui/interactive-story.story';
+
+import { Input } from '@renderer/components/Input';
+import { Label } from '@renderer/components/Label';
+
+import { storyStore } from '../../story.store';
 
 export const failEffectTypes = {
   disable: 'disable',

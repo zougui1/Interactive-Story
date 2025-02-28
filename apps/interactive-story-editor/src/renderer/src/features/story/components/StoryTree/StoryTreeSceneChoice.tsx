@@ -2,14 +2,15 @@ import { useState } from 'react';
 import { Check, X } from 'lucide-react';
 import { useSelector } from '@xstate/store/react';
 
+import { reorderArray } from '@renderer/utils';
+
 import { useStoryTreeContext } from './context';
 import { StoryTreeChoiceMenu } from './StoryTreeChoiceMenu';
 import { BadgeList } from './BadgeList';
+import { TargetSceneTextarea } from './TargetSceneTextarea';
 import { Scene } from '../Scene';
 import { failEffectTypes } from '../stat/StatCheckDialog';
 import { storyStore } from '../../story.store';
-import { TargetSceneTextarea } from './TargetSceneTextarea';
-import { reorderArray } from '@renderer/utils';
 
 export interface BadgeProps {
   children?: React.ReactNode;

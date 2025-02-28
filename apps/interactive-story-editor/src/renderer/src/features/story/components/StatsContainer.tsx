@@ -1,8 +1,10 @@
-import { Button } from '@zougui/react.ui';
 import { Plus } from 'lucide-react';
-import { StatFormDialog } from './stat/StatFormDialog';
 import { isEqual } from 'radash';
 import { useSelector } from '@xstate/store/react';
+
+import { Button } from '@zougui/react.ui';
+
+import { StatFormDialog } from './stat/StatFormDialog';
 import { storyStore } from '../story.store';
 
 export const StatLabel = ({ id }: StatLabelProps) => {

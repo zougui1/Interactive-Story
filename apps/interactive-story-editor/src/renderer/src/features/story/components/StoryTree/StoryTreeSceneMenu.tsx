@@ -1,5 +1,6 @@
 import { useDeferredValue, useState } from 'react';
 import { ArrowUpToLine, EllipsisVertical, Split, Copy, ChartBarIncreasing } from 'lucide-react';
+import { useSelector } from '@xstate/store/react';
 
 import { SceneChoiceTarget, SceneChoiceTargetType, type SceneChoice } from '@zougui/interactive-story.story';
 
@@ -8,10 +9,9 @@ import { copyText } from '@renderer/utils';
 
 import { Scene } from '../Scene';
 import { ScenePickerDialog } from '../ScenePickerDialog';
-import { rootId } from '../../defaultStoryData';
-import { useSelector } from '@xstate/store/react';
-import { storyStore } from '../../story.store';
 import { StatIncrementDecrementDialog } from '../stat/StatIncrementDecrementDialog';
+import { rootId } from '../../defaultStoryData';
+import { storyStore } from '../../story.store';
 
 export const StoryTreeSceneMenu = ({ choice, target, onOpenChange }: StoryTreeSceneMenuProps) => {
   const [openScenePickerDialog, setOpenScenePickerDialog] = useState(false);

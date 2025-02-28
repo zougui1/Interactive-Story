@@ -3,8 +3,8 @@ import { useSelector } from '@xstate/store/react';
 import { StoryTree } from '../components/StoryTree';
 import { MenuBar } from '../components/MenuBar';
 import { StatsContainer } from '../components/StatsContainer';
-import { storyStore } from '../story.store';
 import { TitleInput } from '../components/TitleInput';
+import { storyStore } from '../story.store';
 
 export const Story = () => {
   const syntheticKey = useSelector(storyStore, state => state.context.syntheticKey);

@@ -1,10 +1,13 @@
-import { useSelector } from '@xstate/store/react';
-import { Button, Dialog } from '@zougui/react.ui';
-import { storyStore } from '../../story.store';
-import { Input } from '@renderer/components/Input';
 import { useState } from 'react';
 import { isNumber } from 'radash';
+import { useSelector } from '@xstate/store/react';
+
+import { Button, Dialog } from '@zougui/react.ui';
 import { SceneChoiceTarget } from '@zougui/interactive-story.story';
+
+import { Input } from '@renderer/components/Input';
+
+import { storyStore } from '../../story.store';
 
 // TODO use useAppForm
 export const StatIncrementDecrementDialog = ({ choiceId, targetId, open, onClose, defaultValues }: StatIncrementDecrementDialogProps) => {

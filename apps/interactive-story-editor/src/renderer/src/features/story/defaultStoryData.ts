@@ -1,5 +1,6 @@
-import type { Story } from '@zougui/interactive-story.story';
 import { nanoid } from 'nanoid';
+
+import type { Story } from '@zougui/interactive-story.story';
 
 export const rootId = 'root';
 

@@ -1,10 +1,10 @@
 import { ChevronUp, Plus, Copy } from 'lucide-react';
+import { useSelector } from '@xstate/store/react';
 
 import { cn, copyText } from '@renderer/utils';
 
 import { useStoryTreeContext } from './context';
 import { Scene } from '../Scene';
-import { useSelector } from '@xstate/store/react';
 import { storyStore } from '../../story.store';
 
 export const StoryTreeCurrentScene = () => {

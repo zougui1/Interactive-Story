@@ -1,12 +1,15 @@
-import { SceneChoice, SceneChoiceTarget, SceneChoiceTargetType } from '@zougui/interactive-story.story';
 import { ArrowDown, ArrowUpToLine, ChevronDown } from 'lucide-react';
-import { Scene } from '../Scene';
+import { useSelector } from '@xstate/store/react';
+
+import { SceneChoice, SceneChoiceTarget, SceneChoiceTargetType } from '@zougui/interactive-story.story';
+
+import { reorderArray } from '@renderer/utils';
+
 import { useStoryTreeContext } from './context';
 import { BadgeList } from './BadgeList';
-import { useSelector } from '@xstate/store/react';
-import { storyStore } from '../../story.store';
 import { StoryTreeSceneMenu } from './StoryTreeSceneMenu';
-import { reorderArray } from '@renderer/utils';
+import { Scene } from '../Scene';
+import { storyStore } from '../../story.store';
 
 export const TargetSceneTextarea = ({ choice, target, onOpenChange, placeholder, children }: TargetSceneTextareaProps) => {
   const story = useStoryTreeContext();

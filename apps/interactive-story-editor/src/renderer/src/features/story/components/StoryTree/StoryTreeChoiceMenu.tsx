@@ -1,14 +1,14 @@
 import { useDeferredValue, useState } from 'react';
 import { Trash2, EllipsisVertical, ChartBarIncreasing } from 'lucide-react';
+import { useSelector } from '@xstate/store/react';
 
 import { type SceneChoice } from '@zougui/interactive-story.story';
 
 import { Dropdown } from '@renderer/components/Dropdown';
 
 import { Scene } from '../Scene';
-import { useSelector } from '@xstate/store/react';
-import { storyStore } from '../../story.store';
 import { StatCheckDialog } from '../stat/StatCheckDialog';
+import { storyStore } from '../../story.store';
 
 export const StoryTreeChoiceMenu = ({ choice, onOpenChange }: StoryTreeChoiceMenuProps) => {
   const [openStatCheckDialog, setOpenStatCheckDialog] = useState(false);
