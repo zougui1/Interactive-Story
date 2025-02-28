@@ -1,23 +1,20 @@
 import { Fragment, useEffect } from 'react';
 import { useSelector } from '@xstate/store/react';
 
-import type { Story as StoryData, SceneChoice } from '@zougui/interactive-story.story';
+import type { SceneChoice } from '@zougui/interactive-story.story';
 
 import { Separator } from '~/components/Separator';
-
-import { ChoiceMenu } from '../components/ChoiceMenu';
-import { FadingTextContainer } from '../components/FadingTextContainer';
-import { storySaveStore } from '../storySave';
 import { AppMarkdown } from '~/components/AppMarkdown';
 import { Progress } from '~/components/Progress';
 import { Button } from '~/components/Button';
 
-export const Story = ({ story }: StoryProps) => {
-  const currentStorySave = useSelector(storySaveStore, state => state.context);
+import { ChoiceMenu } from '../components/ChoiceMenu';
+import { FadingTextContainer } from '../components/FadingTextContainer';
+import { storySaveStore } from '../storySave';
+import { story } from '../story';
 
-  useEffect(() => {
-    storySaveStore.trigger.init({ story });
-  }, [story]);
+export const Story = () => {
+  const currentStorySave = useSelector(storySaveStore, state => state.context);
 
   const acts = currentStorySave.acts.map(({ choiceId, targetId }) => {
     const choice = story.choices[choiceId];
@@ -113,10 +110,10 @@ export const Story = ({ story }: StoryProps) => {
             <AppMarkdown forceNewLines>{story.scenes.root.text}</AppMarkdown>
           )}
 
-          {acts.map((prevScene, index) => (
+          {acts.map((act, index) => (
             <Fragment key={index}>
-              <AppMarkdown forceNewLines>{`\\> ${prevScene.choice.text}`}</AppMarkdown>
-              <AppMarkdown forceNewLines>{prevScene.scene.text}</AppMarkdown>
+              <AppMarkdown forceNewLines>{`\\> ${act.choice.text}`}</AppMarkdown>
+              <AppMarkdown forceNewLines>{act.scene.text}</AppMarkdown>
             </Fragment>
           ))}
 
@@ -141,14 +138,10 @@ export const Story = ({ story }: StoryProps) => {
 
         {!currentScene.choices?.length && (
           <div>
-            <Button onClick={() => storySaveStore.trigger.restart({ story })}>Play Again</Button>
+            <Button onClick={() => storySaveStore.trigger.restart()}>Play Again</Button>
           </div>
         )}
       </div>
     </div>
   );
-}
-
-export interface StoryProps {
-  story: StoryData;
 }

@@ -1,13 +1,12 @@
 import { useSelector } from '@xstate/store/react';
 
-import { Story } from '@zougui/interactive-story.story';
-
 import { Menu } from '~/components/Menu';
 import { Progress } from '~/components/Progress';
 
 import { storySaveStore } from '../storySave';
+import { story } from '../story';
 
-export const StatsMenu = ({ story }: { story: Story }) => {
+export const StatsMenu = () => {
   const currentStorySave = useSelector(storySaveStore, state => state.context);
 
   return (

@@ -5,15 +5,31 @@ import useLocalStorage from 'use-local-storage';
 import { produce } from 'immer';
 
 import { catchError } from '~/utils';
-import { Story } from '@zougui/interactive-story.story';
+
+import { story } from './story';
 
 const savesStorageKey = 'saves';
+
+const getStartStats = (): Record<string, Stat> => {
+  const stats: Record<string, Stat> = {};
+
+  for (const stat of Object.values(story.stats)) {
+    stats[stat.id] = {
+      id: stat.id,
+      name: stat.name,
+      color: stat.color,
+      value: stat.startValue,
+    };
+  }
+
+  return stats;
+}
 
 export const storySaveStore = createStore({
   context: {
     id: nanoid(),
     date: new Date(),
-    stats: {},
+    stats: getStartStats(),
     acts: [],
   } as StorySave,
 
@@ -32,40 +48,11 @@ export const storySaveStore = createStore({
   },
 
   on: {
-    init: (context, event: { story: Story }) => {
-      const stats: Record<string, Stat> = {};
-
-      for (const stat of Object.values(event.story.stats)) {
-        stats[stat.id] = {
-          id: stat.id,
-          name: stat.name,
-          color: stat.color,
-          value: stat.startValue,
-        };
-      }
-
-      return {
-        ...context,
-        stats,
-      };
-    },
-
-    restart: (context, event: { story: Story }, enqueue) => {
-      const stats: Record<string, Stat> = {};
-
-      for (const stat of Object.values(event.story.stats)) {
-        stats[stat.id] = {
-          id: stat.id,
-          name: stat.name,
-          color: stat.color,
-          value: stat.startValue,
-        };
-      }
-
+    restart: (context, _event, enqueue) => {
       const updatedContext = {
         id: context.id,
         date: new Date(),
-        stats,
+        stats: getStartStats(),
         acts: [],
       };
 

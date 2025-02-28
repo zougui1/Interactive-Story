@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { tv } from 'tailwind-variants';
+import { useSelector } from '@xstate/store/react';
 
 import type { SceneChoice, Story } from '@zougui/interactive-story.story';
 
 import { useWindowEvent } from '~/hooks';
-import { useSelector } from '@xstate/store/react';
-import { storySaveStore } from '../../storySave';
 import { reorderArray } from '~/utils';
+
+import { storySaveStore } from '../../storySave';
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -78,7 +79,7 @@ export const ChoiceMenu = React.forwardRef<HTMLUListElement, ChoiceMenuProps>(({
     .map((choice, index) => {
       return {
         ...choice,
-        letter: alphabet[index],
+        letter: alphabet[index % alphabet.length],
       };
     });
 

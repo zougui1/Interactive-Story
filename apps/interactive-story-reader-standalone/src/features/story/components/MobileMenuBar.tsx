@@ -1,11 +1,9 @@
-import { type Story } from '@zougui/interactive-story.story';
-
 import { cn } from '~/utils';
 
 import { SaveMenu } from './SaveMenu';
 import { StatsMenu } from './StatsMenu';
 
-export const MobileMenuBar = ({ story, className }: MobileMenuBarProps) => {
+export const MobileMenuBar = ({ className }: MobileMenuBarProps) => {
   return (
     <div
       className={cn(
@@ -17,13 +15,12 @@ export const MobileMenuBar = ({ story, className }: MobileMenuBarProps) => {
         <SaveMenu />
       </div>
       <div>
-        <StatsMenu story={story} />
+        <StatsMenu />
       </div>
     </div>
   );
 }
 
 export interface MobileMenuBarProps {
-  story: Story;
   className?: string;
 }

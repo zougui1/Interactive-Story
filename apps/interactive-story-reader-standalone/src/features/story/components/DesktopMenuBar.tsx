@@ -1,4 +1,5 @@
 import { cn } from '~/utils';
+
 import { SaveMenu } from './SaveMenu';
 
 export const DesktopMenuBar = ({ className }: DesktopMenuBarProps) => {
