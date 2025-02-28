@@ -4,6 +4,7 @@ import { StoryTree } from '../components/StoryTree';
 import { MenuBar } from '../components/MenuBar';
 import { StatsContainer } from '../components/StatsContainer';
 import { storyStore } from '../story.store';
+import { TitleInput } from '../components/TitleInput';
 
 export const Story = () => {
   const syntheticKey = useSelector(storyStore, state => state.context.syntheticKey);
@@ -15,12 +16,17 @@ export const Story = () => {
 
       <StatsContainer />
 
-      <div className="flex justify-center container mx-auto pt-8">
-        <StoryTree
-          key={syntheticKey}
-          onChange={story => storyStore.trigger.updateStory({ story })}
-          defaultStory={story}
-        />
+      <div className="flex flex-col items-center space-y-16 pt-6">
+        <div>
+          <TitleInput />
+        </div>
+
+        <div className="flex justify-center container mx-auto">
+          <StoryTree
+            key={syntheticKey}
+            defaultStory={story}
+          />
+        </div>
       </div>
     </>
   );

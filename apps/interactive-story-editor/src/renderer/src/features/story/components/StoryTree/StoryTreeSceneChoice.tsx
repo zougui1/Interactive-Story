@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { Check, X } from 'lucide-react';
 import { useSelector } from '@xstate/store/react';
 
-import { type SceneChoice } from '@zougui/interactive-story.story';
-
 import { useStoryTreeContext } from './context';
 import { StoryTreeChoiceMenu } from './StoryTreeChoiceMenu';
 import { BadgeList } from './BadgeList';
@@ -18,9 +16,10 @@ export interface BadgeProps {
   color?: string;
 }
 
-export const StoryTreeSceneChoice = ({ choice }: StoryTreeSceneChoiceProps) => {
+export const StoryTreeSceneChoice = ({ choiceId }: StoryTreeSceneChoiceProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const story = useStoryTreeContext();
+  const choice = useSelector(storyStore, state => state.context.data.choices[choiceId]);
   const stats = useSelector(storyStore, state => state.context.data.stats);
 
   const successTarget = choice.targets.success;
@@ -40,7 +39,7 @@ export const StoryTreeSceneChoice = ({ choice }: StoryTreeSceneChoiceProps) => {
   const choiceTextarea = (
     <Scene.Textarea
       value={choice.text}
-      onChange={e => story.setChoiceText(choice.id, e.currentTarget.value)}
+      onChange={e => storyStore.trigger.updateChoiceText({ id: choice.id, text: e.currentTarget.value })}
       readOnly={story.readOnly}
       placeholder="Choice text"
       className="h-2/5"
@@ -112,6 +111,6 @@ export const StoryTreeSceneChoice = ({ choice }: StoryTreeSceneChoiceProps) => {
 }
 
 export interface StoryTreeSceneChoiceProps {
-  choice: SceneChoice;
+  choiceId: string;
   index: number;
 }

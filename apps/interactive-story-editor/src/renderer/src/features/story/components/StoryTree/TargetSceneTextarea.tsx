@@ -11,8 +11,8 @@ import { reorderArray } from '@renderer/utils';
 export const TargetSceneTextarea = ({ choice, target, onOpenChange, placeholder, children }: TargetSceneTextareaProps) => {
   const story = useStoryTreeContext();
   const stats = useSelector(storyStore, state => state.context.data.stats);
+  const targetScene = useSelector(storyStore, state => state.context.data.scenes[target.sceneId]);
 
-  const targetScene = story.scenes[target.sceneId];
   const statIncrements = Object
     .entries(target.statIncrements ?? {})
     .map(([statId, value]) => ({
@@ -28,7 +28,7 @@ export const TargetSceneTextarea = ({ choice, target, onOpenChange, placeholder,
 
       <Scene.Textarea
         value={targetScene?.text ?? ''}
-        onChange={e => story.setSceneText(target.sceneId, e.currentTarget.value)}
+        onChange={e => storyStore.trigger.updateSceneText({ id: target.sceneId, text: e.currentTarget.value })}
         placeholder={placeholder}
       >
         {statIncrements.length > 0 && (

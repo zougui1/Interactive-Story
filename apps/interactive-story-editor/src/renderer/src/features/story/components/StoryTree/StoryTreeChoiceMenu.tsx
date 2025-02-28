@@ -5,7 +5,6 @@ import { type SceneChoice } from '@zougui/interactive-story.story';
 
 import { Dropdown } from '@renderer/components/Dropdown';
 
-import { useStoryTreeContext } from './context';
 import { Scene } from '../Scene';
 import { useSelector } from '@xstate/store/react';
 import { storyStore } from '../../story.store';
@@ -13,7 +12,6 @@ import { StatCheckDialog } from '../stat/StatCheckDialog';
 
 export const StoryTreeChoiceMenu = ({ choice, onOpenChange }: StoryTreeChoiceMenuProps) => {
   const [openStatCheckDialog, setOpenStatCheckDialog] = useState(false);
-  const story = useStoryTreeContext();
   const hasStats = useSelector(storyStore, state => Object.keys(state.context.data.stats).length > 0);
 
   // deferring the dialogs' open state fixes a bug that causes the dialogs to make the whole app to bug out
@@ -46,7 +44,7 @@ export const StoryTreeChoiceMenu = ({ choice, onOpenChange }: StoryTreeChoiceMen
 
           <Dropdown.Separator />
 
-          <Dropdown.Item onClick={() => story.deleteChoice(choice.id)}>
+          <Dropdown.Item onClick={() => storyStore.trigger.deleteChoice({ id: choice.id })}>
             <Trash2 className="w-4 text-red-500 mr-2" />
             <span>Delete choice</span>
           </Dropdown.Item>

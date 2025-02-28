@@ -60,7 +60,7 @@ export const ScenePickerDialog = ({ open, defaultSceneId = '', onClose, onSubmit
                 <StoryTree
                   readOnly
                   defaultStory={story}
-                  onCurrentSceneChange={scene => setTreeSceneId(scene.id)}
+                  onCurrentSceneChange={sceneId => setTreeSceneId(sceneId)}
                 />
               </div>
             </Tabs.Content>

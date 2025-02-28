@@ -6,7 +6,6 @@ import { SceneChoiceTarget, SceneChoiceTargetType, type SceneChoice } from '@zou
 import { Dropdown } from '@renderer/components/Dropdown';
 import { copyText } from '@renderer/utils';
 
-import { useStoryTreeContext } from './context';
 import { Scene } from '../Scene';
 import { ScenePickerDialog } from '../ScenePickerDialog';
 import { rootId } from '../../defaultStoryData';
@@ -17,7 +16,7 @@ import { StatIncrementDecrementDialog } from '../stat/StatIncrementDecrementDial
 export const StoryTreeSceneMenu = ({ choice, target, onOpenChange }: StoryTreeSceneMenuProps) => {
   const [openScenePickerDialog, setOpenScenePickerDialog] = useState(false);
   const [openStatIncrementDecrementDialog, setOpenStatIncrementDecrementDialog] = useState(false);
-  const story = useStoryTreeContext();
+  const storyData = useSelector(storyStore, state => state.context.data);
   const hasStats = useSelector(storyStore, state => Object.keys(state.context.data.stats).length > 0);
 
   // deferring the dialogs' open state fixes a bug that causes the dialogs to make the whole app to bug out
@@ -30,11 +29,11 @@ export const StoryTreeSceneMenu = ({ choice, target, onOpenChange }: StoryTreeSc
         open={deferredOpenScenePickerDialog}
         onClose={() => setOpenScenePickerDialog(false)}
         story={{
-          ...story,
+          ...storyData,
           sceneIdStack: [rootId],
         }}
         defaultSceneId={target.type === SceneChoiceTargetType.Jump ? target.sceneId : undefined}
-        onSubmit={sceneId => story.setChoiceJump(choice.id, sceneId)}
+        onSubmit={sceneId => storyStore.trigger.setChoiceJump({ choiceId: choice.id, targetId: target.id, sceneId: sceneId })}
       />
 
       <StatIncrementDecrementDialog
@@ -59,7 +58,7 @@ export const StoryTreeSceneMenu = ({ choice, target, onOpenChange }: StoryTreeSc
           </Dropdown.Item>
 
           {target.type !== SceneChoiceTargetType.Branch && (
-            <Dropdown.Item onClick={() => story.setChoiceBranch(choice.id)}>
+            <Dropdown.Item onClick={() => storyStore.trigger.setChoiceBranch({ choiceId: choice.id, targetId: target.id })}>
               <Split className="w-4 mr-2" />
               <span>Branch scene</span>
             </Dropdown.Item>

@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { isNumber } from 'radash';
 import { Label } from '@renderer/components/Label';
 import { SceneChoice } from '@zougui/interactive-story.story';
-import { useStoryTreeContext } from '../StoryTree/context';
 
 export const failEffectTypes = {
   disable: 'disable',
@@ -24,7 +23,6 @@ export const failEffectTypeLabels: Record<FailEffectType, string> = {
 
 // TODO use useAppForm
 export const StatCheckDialog = ({ choiceId, open, onClose, defaultValues }: StatCheckDialogProps) => {
-  const story = useStoryTreeContext();
   const stats = useSelector(storyStore, state => state.context.data.stats);
   const [statChecks, setStatChecks] = useState<Record<string, string | number>>(defaultValues?.stats ?? {});
   const [checkFailEffect, setCheckFailEffect] = useState<FailEffectType>(defaultValues?.failEffect ?? failEffectTypes.branch);
@@ -69,7 +67,7 @@ export const StatCheckDialog = ({ choiceId, open, onClose, defaultValues }: Stat
         stats,
         failEffect: checkFailEffect,
       });
-      story.updateChoiceStatCheck({
+      storyStore.trigger.updateChoiceStatCheck({
         stats,
         failEffect: checkFailEffect,
         choiceId,
@@ -78,7 +76,7 @@ export const StatCheckDialog = ({ choiceId, open, onClose, defaultValues }: Stat
   }
 
   const handleRemoveStatCheck = () => {
-    story.removeChoiceStatCheck({ choiceId });
+    storyStore.trigger.removeChoiceStatCheck({ choiceId });
     close({
       stats: {},
       failEffect: failEffectTypes.branch,

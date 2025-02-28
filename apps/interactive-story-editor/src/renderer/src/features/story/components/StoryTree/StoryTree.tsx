@@ -1,35 +1,31 @@
-import { Input } from '@renderer/components/Input';
+import { isEqual } from 'radash';
+import { useSelector } from '@xstate/store/react';
 
 import { StoryTreeProvider, useStoryTreeContext, type StoryTreeProviderProps } from './context';
 import { StoryTreeCurrentScene } from './StoryTreeCurrentScene';
 import { StoryTreeSceneChoice } from './StoryTreeSceneChoice';
 import { Row } from '../Row';
+import { storyStore } from '../../story.store';
 
 const StoryTreeRoot = () => {
   const story = useStoryTreeContext();
+  const currentChoices = useSelector(storyStore, state => {
+    const { data } = state.context;
+    const currentScene = data.scenes[story.currentSceneId];
+
+    return currentScene?.choices?.filter(choiceId => data.choices[choiceId]) ?? [];
+  }, isEqual);
 
   return (
     <div className="flex flex-col items-center space-y-16">
-      <Row>
-        <Input
-          label="Title"
-          onChange={(event) => story.setTitle(event.currentTarget.value)}
-          value={story.title}
-          className="w-full"
-          autoFocus
-        />
-      </Row>
-
       <Row>
         <StoryTreeCurrentScene />
       </Row>
 
       <Row>
-        {story.currentScene.choices
-          ?.filter(choiceId => story.choices[choiceId])
-          .map((choiceId, index) => (
-            <StoryTreeSceneChoice key={choiceId} choice={story.choices[choiceId]} index={index} />
-          ))}
+        {currentChoices.map((choiceId, index) => (
+          <StoryTreeSceneChoice key={choiceId} choiceId={choiceId} index={index} />
+        ))}
       </Row>
     </div>
   );

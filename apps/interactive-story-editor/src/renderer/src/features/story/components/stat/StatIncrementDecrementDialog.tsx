@@ -5,11 +5,9 @@ import { Input } from '@renderer/components/Input';
 import { useState } from 'react';
 import { isNumber } from 'radash';
 import { SceneChoiceTarget } from '@zougui/interactive-story.story';
-import { useStoryTreeContext } from '../StoryTree/context';
 
 // TODO use useAppForm
 export const StatIncrementDecrementDialog = ({ choiceId, targetId, open, onClose, defaultValues }: StatIncrementDecrementDialogProps) => {
-  const story = useStoryTreeContext();
   const stats = useSelector(storyStore, state => state.context.data.stats);
   const [statIncrements, setStatIncrements] = useState<Record<string, string | number>>(defaultValues ?? {});
 
@@ -33,9 +31,9 @@ export const StatIncrementDecrementDialog = ({ choiceId, targetId, open, onClose
     });
   }
 
-  const close = () => {
+  const close = (newDefaultValues?: Record<string, string | number>) => {
     onClose();
-    setStatIncrements(defaultValues ?? {});
+    setStatIncrements(newDefaultValues ?? defaultValues ?? {});
   }
 
   const handleSubmit = () => {
@@ -46,17 +44,17 @@ export const StatIncrementDecrementDialog = ({ choiceId, targetId, open, onClose
         stats[id] = Number(value);
       }
 
-      story.updateChoiceTargetStatIncrements({
+      storyStore.trigger.updateChoiceTargetStatIncrements({
         statIncrements: stats,
         choiceId,
         targetId,
       });
-      close();
+      close(stats);
     }
   }
 
   return (
-    <Dialog.Root open={open} onOpenChange={close}>
+    <Dialog.Root open={open} onOpenChange={() => close()}>
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>Increment/Decrement Stats</Dialog.Title>
@@ -79,9 +77,7 @@ export const StatIncrementDecrementDialog = ({ choiceId, targetId, open, onClose
         </Dialog.Body>
 
         <Dialog.Footer>
-          <Dialog.Close asChild>
-            <Button onClick={handleSubmit}>Confirm</Button>
-          </Dialog.Close>
+          <Button onClick={handleSubmit}>Confirm</Button>
 
           <Dialog.Close asChild>
             <Button variant="outline">Cancel</Button>
