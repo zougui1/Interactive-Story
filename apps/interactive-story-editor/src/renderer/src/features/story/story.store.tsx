@@ -375,7 +375,7 @@ export const storyStore = createStore({
       }
 
       return produce(context, draft => {
-        for (const id of Object.keys(statIncrements ?? {})) {
+        for (const _id of Object.keys(statIncrements ?? {})) {
           // TODO update stat references
           //const statReference = draft.data.statReferences[id];
           const increments = { ...statIncrements };
