@@ -1,9 +1,17 @@
+import { useSelector } from '@xstate/store/react';
+
 import { cn } from '~/utils';
 
 import { SaveMenu } from './SaveMenu';
 import { StatsMenu } from './StatsMenu';
+import { storySaveStore } from '../storySave';
+import { story } from '../story';
 
 export const MobileMenuBar = ({ className }: MobileMenuBarProps) => {
+  const hasVisibleStats = useSelector(storySaveStore, state => {
+    return Object.values(state.context.stats).some(stat => !story.stats[stat.id]?.hidden);
+  });
+
   return (
     <div
       className={cn(
@@ -14,9 +22,11 @@ export const MobileMenuBar = ({ className }: MobileMenuBarProps) => {
       <div>
         <SaveMenu />
       </div>
-      <div>
-        <StatsMenu />
-      </div>
+      {hasVisibleStats && (
+        <div>
+          <StatsMenu />
+        </div>
+      )}
     </div>
   );
 }
