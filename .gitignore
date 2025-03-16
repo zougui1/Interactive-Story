@@ -5,3 +5,4 @@ tsconfig.tsbuildinfo
 .history
 .env
 .env.development
+.tsup

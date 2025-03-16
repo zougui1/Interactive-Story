@@ -10,5 +10,11 @@
   },
   "keywords": [],
   "author": "Zougui",
-  "license": "ISC"
+  "license": "ISC",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild"
+    ]
+  }
 }
