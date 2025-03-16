@@ -12,11 +12,11 @@ export const FadingTextContainer = ({ zoom, disabled, ...rest }: FadingTextConta
 
     if (!textElement) return;
 
-    const childElements = [...textElement.childNodes].filter(node => {
-      return node instanceof HTMLElement;
-    }) as HTMLElement[];
+    for (const childElement of textElement.childNodes) {
+      if (!(childElement instanceof HTMLElement)) {
+        continue;
+      }
 
-    for (const childElement of childElements) {
       if (disabled) {
         childElement.style.opacity = '';
       } else {

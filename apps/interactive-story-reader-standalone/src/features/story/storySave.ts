@@ -1,12 +1,14 @@
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { createStore } from '@xstate/store';
+import { createStore, SnapshotFromStore } from '@xstate/store';
 import useLocalStorage from 'use-local-storage';
 import { produce } from 'immer';
+import { createSelector } from 'reselect';
 
 import { catchError } from '~/utils';
 
 import { story } from './story';
+import { Scene, SceneChoice } from '@zougui/interactive-story.story';
 
 const savesStorageKey = 'saves';
 
@@ -148,4 +150,29 @@ export const usePersistedSaves = (): [Record<string, StorySave>, React.Dispatch<
       return parseSaves(value);
     }
   });
+}
+
+export const selectActs = createSelector(
+  (state: SnapshotFromStore<typeof storySaveStore>) => state.context.acts,
+  bareActs => {
+    const acts: Act[] = [];
+
+    for (const { choiceId, targetId, targetType } of bareActs) {
+      const choice = story.choices[choiceId];
+      const target = choice.targets[targetType]?.[targetId];
+
+      if (target) {
+        const scene = story.scenes[target.sceneId];
+
+        acts.push({ choice, scene });
+      }
+    }
+
+    return acts;
+  },
+);
+
+export interface Act {
+  choice: SceneChoice;
+  scene: Scene;
 }

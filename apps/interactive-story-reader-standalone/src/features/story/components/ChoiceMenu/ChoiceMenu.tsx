@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';
 import { useSelector } from '@xstate/store/react';
 
@@ -46,6 +46,7 @@ const menu = tv({
 
 export const ChoiceMenu = React.forwardRef<HTMLUListElement, ChoiceMenuProps>(({ choices, onChoose, story }, ref) => {
   const stats = useSelector(storySaveStore, state => state.context.stats);
+
 
   const getStatsForCheck = (statCheck: NonNullable<SceneChoice['check']>['stats']) => {
     const statsForCheck = Object.entries(statCheck).filter(([statId]) => !story.stats[statId]?.hidden).map(([statId, value]) => {
@@ -163,11 +164,12 @@ export const ChoiceMenu = React.forwardRef<HTMLUListElement, ChoiceMenuProps>(({
         <li
           key={choice.id}
           className={item({
+            className: 'word',
             focused: focusedChoice.id === choice.id,
             disabled: isChoiceDisabled(choice),
           })}
-          onMouseEnter={() => setFocusedChoice(choice)}
-          onClick={() => onChoose(choice)}
+          onMouseEnter={() => !isChoiceDisabled(choice) && setFocusedChoice(choice)}
+          onClick={() => !isChoiceDisabled(choice) && onChoose(choice)}
           data-id="choice"
         >
           <span>{choice.letter}:</span>

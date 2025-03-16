@@ -1,158 +1,33 @@
-import { Fragment, useEffect } from 'react';
-import { useSelector } from '@xstate/store/react';
-
-import type { SceneChoice } from '@zougui/interactive-story.story';
-
-import { Separator } from '~/components/Separator';
-import { AppMarkdown } from '~/components/AppMarkdown';
-import { Progress } from '~/components/Progress';
-import { Button } from '~/components/Button';
-
-import { ChoiceMenu } from '../components/ChoiceMenu';
+import { StoryChoiceMenu } from '../components/StoryChoiceMenu';
+import { StoryText } from '../components/StoryText';
+import { ReplayButton } from '../components/ReplayButton';
+import { DesktopStoryStats } from '../components/DesktopStoryStats';
 import { FadingTextContainer } from '../components/FadingTextContainer';
-import { storySaveStore } from '../storySave';
+import { RootScene } from '../components/RootScene';
 import { story } from '../story';
-import { randomItem } from '~/utils';
+import { CurrentScene } from '../components/CurrentScene';
 
 export const Story = () => {
-  const currentStorySave = useSelector(storySaveStore, state => state.context);
-
-  const acts = currentStorySave.acts.map(({ choiceId, targetType, targetId }) => {
-    const choice = story.choices[choiceId];
-    const target = choice.targets[targetType]?.[targetId];
-
-    if (!target) {
-      return;
-    }
-
-    const scene = story.scenes[target.sceneId];
-
-    return {
-      scene,
-      choice,
-    };
-  }).filter(Boolean).map(act => act!);
-
-  const lastAct = acts.pop();
-  const currentScene = lastAct
-    ? story.scenes[lastAct.scene.id]
-    : story.scenes.root;
-
-  const checkStats = (statCheck: NonNullable<SceneChoice['check']>['stats']): boolean => {
-    return Object.entries(statCheck).every(([statId, value]) => {
-      return currentStorySave.stats[statId] && currentStorySave.stats[statId].value >= value;
-    });
-  }
-
-  const handleChoose = (choice: SceneChoice) => {
-    if (!choice.check) {
-      const target = randomItem(Object.values(choice.targets.success ?? {}));
-
-      storySaveStore.trigger.addAct({
-        choiceId: choice.id,
-        targetId: target.targetId,
-        targetType: target.targetType,
-      });
-
-      if (target.statIncrements) {
-        storySaveStore.trigger.incrementStats({ stats: target.statIncrements });
-      }
-
-      return;
-    }
-
-    if (!choice.targets.fail && choice.check.failEffect === 'branch') {
-      console.log(`Missing fail scene outcome for choice: ${choice.id}`);
-      return;
-    }
-
-    const targetGroup = checkStats(choice.check.stats) ? choice.targets.success : choice.targets.fail;
-
-    if (!targetGroup) {
-      return;
-    }
-
-    const target = randomItem(Object.values(targetGroup));
-
-    storySaveStore.trigger.addAct({
-      choiceId: choice.id,
-      targetId: target.targetId,
-      targetType: target.targetType,
-    });
-
-    if (target.statIncrements) {
-      storySaveStore.trigger.incrementStats({ stats: target.statIncrements });
-    }
-  }
-
-  useEffect(() => {
-    window.scrollTo({ top: document.body.scrollHeight });
-  }, [acts]);
-
   return (
-    <div className="container w-screen box-border pl-8 md:max-3xl:pl-44 3xl:mx-auto">
+    <div className="container w-screen box-border px-4 md:max-3xl:pl-44 3xl:mx-auto">
       <h1 className="text-5xl font-bold text-center mb-8">
         {story.title}
       </h1>
 
-      <div className="fixed -translate-x-[max(100%_+_1rem)] top-1/2 -translate-y-1/2 w-40 ml-2 flex flex-col gap-4 max-md:hidden">
-        {Object.values(currentStorySave.stats).filter(stat => !story.stats[stat.id]?.hidden).map(stat => (
-          <div key={stat.id} className="flex flex-col gap-2">
-            <div className="flex justify-center gap-2" style={{ color: stat.color }}>
-              <span>
-                {stat.name}
-              </span>
+      <DesktopStoryStats />
 
-              <span>{stat.value}</span>
-            </div>
+      <div className="flex flex-col justify-between space-y-12 pb-4 md:pb-12 text-white">
+        <div className="space-y-4">
+          <FadingTextContainer className="space-y-4">
+            <RootScene />
+            <StoryText />
+          </FadingTextContainer>
 
-            <Progress
-              key={stat.id}
-              value={stat.value}
-              className="w-36 bg-gray-500"
-              color={stat.color}
-            />
-          </div>
-        ))}
-      </div>
+          <CurrentScene />
+        </div>
 
-      <div className="flex flex-col space-y-12 pb-4 md:pb-12 text-white">
-        <FadingTextContainer className="space-y-4">
-          {lastAct && story.scenes.root && (
-            <AppMarkdown forceNewLines>{story.scenes.root.text}</AppMarkdown>
-          )}
-
-          {acts.map((act, index) => (
-            <Fragment key={index}>
-              <AppMarkdown forceNewLines>{`\\> ${act.choice.text}`}</AppMarkdown>
-              <AppMarkdown forceNewLines>{act.scene.text}</AppMarkdown>
-            </Fragment>
-          ))}
-
-          {lastAct && (
-            <>
-              <Separator />
-              <AppMarkdown forceNewLines>{`\\> ${lastAct.choice.text}`}</AppMarkdown>
-            </>
-          )}
-
-          <AppMarkdown forceNewLines>{currentScene.text}</AppMarkdown>
-        </FadingTextContainer>
-
-        {currentScene.choices && (
-          <ChoiceMenu
-            key={currentScene.id}
-            story={story}
-            choices={currentScene.choices.map(choiceId => story.choices[choiceId]).filter(Boolean)}
-            onChoose={handleChoose}
-          />
-        )}
-
-        {!currentScene.choices?.length && (
-          <div>
-            <Button onClick={() => storySaveStore.trigger.restart()}>Play Again</Button>
-          </div>
-        )}
+        <StoryChoiceMenu />
+        <ReplayButton />
       </div>
     </div>
   );

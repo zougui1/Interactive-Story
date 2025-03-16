@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Markdown, { RuleType, type MarkdownToJSX } from 'markdown-to-jsx';
 
 import { cn } from '~/utils';
@@ -29,7 +30,7 @@ const renderRule = (
   return next();
 }
 
-export const AppMarkdown = ({ className, forceNewLines, children, ...rest }: AppMarkdownProps) => {
+export const AppMarkdown = memo(({ className, forceNewLines, children, ...rest }: AppMarkdownProps) => {
   return (
     <Markdown
       {...rest}
@@ -39,7 +40,9 @@ export const AppMarkdown = ({ className, forceNewLines, children, ...rest }: App
       {forceNewLines ? children.replaceAll('\n', '\n\n') : children}
     </Markdown>
   );
-}
+});
+
+AppMarkdown.displayName = 'AppMarkdown';
 
 export interface AppMarkdownProps extends Omit<React.HTMLAttributes<Element>, 'children'> {
   children: string;
